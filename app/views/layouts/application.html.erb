@@ -36,13 +36,13 @@
           <a class="brand" href="#"><img src="/assets/logo.png" />Labrador</a>
           <div class="btn-group pull-right">
             <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-              <i class="icon-folder-open"></i> <%= current_application %>
+              <i class="icon-folder-open"></i> <%= current_app %>
               <span class="caret"></span>
             </a>
             <ul class="dropdown-menu">
               <% (@applications || []).each do |app| %>
                 <li>
-                  <a href="http://<%= app %>.<%= request.domain %>"><%= app %></a>
+                  <a href="<%= app_url(app) %>"><%= app %></a>
                 </li>
               <% end %>
             </ul>

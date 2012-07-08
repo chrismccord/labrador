@@ -18,7 +18,7 @@ class @Database extends Backbone.Model
 
   fetchCollections: (callback) ->
     $.ajax
-      url: "/data/#{@get('adapter')}/collections"
+      url: "/data/#{@get('id')}/collections"
       success: (data) -> callback?(null, data)
       error: (err) -> callback?(err)
 
@@ -32,7 +32,7 @@ class @Database extends Backbone.Model
     @set(lastFind: {collection, options, callback})
     @trigger('before:send', collection, options)
     $.ajax
-      url: "/data/#{@get('adapter')}?collection=#{collection}"
+      url: "/data/#{@get('id')}?collection=#{collection}&path=#{@get('path')}"
       data: options
       success: (data) ->         
         data.timestamp = (new Date()).valueOf() # Trigger 'change' if even data is the same

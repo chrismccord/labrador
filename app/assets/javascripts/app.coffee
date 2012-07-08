@@ -1,20 +1,18 @@
 @App =
   
-  views: {}
-
   tooltipsVisible: false
 
   init: ->
-    @database = new Database(adapter: 'auto', id: serverExports.database.id)
-    @views.progressView = new ProgressView()
+    @database = new Database(path: serverExports.app.path)
     @tableView = new TableView(model: @database, el: ".fixed-table-container table:first")
+    @progressView = new ProgressView()  
     @footerView = new FooterView(model: @database)
     @resizeBody()
     @bind()
 
 
   bind: ->
-    @tableView.on 'scroll', =>
+    @tableView.off('scroll').on 'scroll', =>
       @hideTooltips() if @tooltipsVisible
 
     $(window).on 'resize', => @resizeBody()
@@ -24,10 +22,11 @@
       $target = $(e.target)
       $("#collections li").removeClass('active')
       $target.parent('li').addClass('active')
-      collection = $(e.target).attr('data-collection')
+      collection = $target.attr('data-collection')
+      databaseId = $target.attr('data-adapter')
+      @database.set(id: databaseId)
       @tableView.showLoading()
       @database.find collection, limit: 500, (err, data) => @database.set({data: data})
-
 
     $(document).on 'keydown', (e) => 
       switch e.keyCode

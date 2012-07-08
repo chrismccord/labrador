@@ -4,7 +4,7 @@ Labrador::Application.routes.draw do
   get 'results', to: 'pages#results'
   
   namespace :data do
-    ['auto', 'mongodb', 'postgres', 'mysql', 'sqlite'].each do |adapter|
+    ['mongodb', 'postgres', 'mysql', 'sqlite'].each do |adapter|
       resources adapter, controller: 'data', adapter: adapter do
         collection do
           get :collections, action: 'collections'
@@ -12,4 +12,6 @@ Labrador::Application.routes.draw do
       end
     end 
   end
+
+  get '/*path', to: 'pages#home'
 end

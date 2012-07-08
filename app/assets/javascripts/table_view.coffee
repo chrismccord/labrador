@@ -121,7 +121,13 @@ class @TableView extends Backbone.View
       rows.push "<tr class='#{if count % 2 is 0 then '' else 'odd'}'>"
       for field in fields
         val = item[field] ? ""
-        type = if $.isNumeric(val) then 'number' else 'string'
+        if $.isNumeric(val)
+          type = 'number'
+        else if typeof(val) is 'object'
+          type = 'json'
+          val = JSON.stringify(val)
+        else
+          type = 'string'
         expanded = if expandedFields.indexOf(field) >= 0 then 'true' else 'false'
         rows.push """
           <td data-type='#{type}' data-field='#{field}' data-expanded='#{expanded}' rel='popover' data-content='#{_.escape(val)}'>
@@ -160,11 +166,11 @@ class @TableView extends Backbone.View
       @trigger('render')
 
   showLoading: (percentage) ->
-    App.views.progressView.show(percentage)
+    App.progressView.show(percentage)
 
   
   hideLoading: ->
-    App.views.progressView.hide()
+    App.progressView.hide()
 
 
   zeroState: ->
