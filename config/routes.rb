@@ -1,7 +1,6 @@
 Labrador::Application.routes.draw do
 
   root to: 'pages#home'
-  get 'results', to: 'pages#results'
   
   namespace :data do
     ['mongodb', 'postgres', 'mysql', 'sqlite'].each do |adapter|
