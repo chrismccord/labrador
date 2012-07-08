@@ -39,10 +39,13 @@ class @FooterView extends Backbone.View
 
   updatePagingState: ->
     count = @model.get('data').items.length
+    limit = @model.get('lastFind').options.limit
     @$prevPage.removeAttr("data-disabled")
     @$nextPage.removeAttr("data-disabled")
     if count is 0
       @$prevPage.attr("data-disabled", true) if @skippedCount() is 0
+      @$nextPage.attr("data-disabled", true)
+    else if count < limit
       @$nextPage.attr("data-disabled", true)
     if @skippedCount() is 0
       @$prevPage.attr("data-disabled", true)
@@ -71,3 +74,4 @@ class @FooterView extends Backbone.View
 
   updateStatus: (message) ->
     @$status.text(message)
+
