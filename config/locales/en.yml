@@ -2,4 +2,40 @@
 # See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
 en:
-  hello: "Hello world"
+  adapters:
+    mongodb:
+      title: "MongoDB"
+      result:
+        one: "document"
+        other: "documents"
+      collection:
+        one: "collection"
+        other: "collections"
+    mysql:
+      title: "MySQL"
+      result:
+        one: "record"
+        other: "records"
+      collection: 
+        one: "table"
+        other: "tables"
+    postgres:
+      title: "PostgreSQL"
+      result:
+        one: "record"
+        other: "records"
+      collection: 
+        one: "table"
+        other: "tables"
+    sqlite:
+      title: "SQLite"
+      result:
+        one: "record"
+        other: "records"
+      collection: 
+        one: "table"
+        other: "tables"
+
+  status:
+    requesting: "requesting %{collection}"
+    showing: "showing %{count} %{results}"

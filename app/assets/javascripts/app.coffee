@@ -5,7 +5,7 @@
   tooltipsVisible: false
 
   init: ->
-    @database = new Database(adapter: 'auto')
+    @database = new Database(adapter: 'auto', id: serverExports.database.id)
     @views.progressView = new ProgressView()
     @tableView = new TableView(model: @database, el: ".fixed-table-container table:first")
     @footerView = new FooterView(model: @database)

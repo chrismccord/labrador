@@ -7,6 +7,7 @@ class PagesController < ApplicationController
 
   def home
     @collections = @adapter.collections
+    exports.database = @adapter.as_json
   end
 
   def results

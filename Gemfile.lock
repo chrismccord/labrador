@@ -43,8 +43,13 @@ GEM
     erubis (2.7.0)
     execjs (1.4.0)
       multi_json (~> 1.0)
+    gon (3.0.5)
+      actionpack (>= 2.3.0)
+      json
     hike (1.2.1)
     i18n (0.6.0)
+    i18n-js (2.1.2)
+      i18n
     journey (1.0.4)
     jquery-rails (2.0.2)
       railties (>= 3.2.0, < 5.0)
@@ -114,6 +119,8 @@ DEPENDENCIES
   bson
   bson_ext
   coffee-rails (~> 3.2.1)
+  gon
+  i18n-js
   jquery-rails
   json
   minitest

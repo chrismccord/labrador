@@ -9,25 +9,55 @@ class @FooterView extends Backbone.View
 
 
   initialize: ->
-    @model.on 'change:data', => 
-      @updateStatus("processing #{@model.get('data').items.length} results")
-    
-    @model.on 'before:send', => @updateStatus('requesting...')
+    @cacheSelectors()
+    @bind()
 
-    App.tableView.on 'render', => 
-      @updateStatus("showing #{@model.get('data').items.length} results")
+
+  bind: ->
+    @model.on 'change:data', => 
+      count = @model.get('data').items.length
+      if count is 0
+        @updateStatus(I18n.t("status.showing", count: count, results: @resultName(count)))
+      else
+        @updateStatus("processing #{count} #{@resultName(count)}")
+
+
+    @model.on 'before:send', (collection, options) => 
+      @updateStatus(I18n.t("status.requesting", collection: collection))
+
+    App.tableView.on 'render', =>
+      count = @model.get('data').items.length
+      @updatePagingState()
+      @updateStatus(I18n.t("status.showing", count: count, results: @resultName(count)))
+
+
+  cacheSelectors: ->
+    @$nextPage = @$("[data-action=next-page]")
+    @$prevPage = @$("[data-action=prev-page]")
+    @$status = @$("[data-name=status]")
+
+
+  updatePagingState: ->
+    count = @model.get('data').items.length
+    @$prevPage.removeAttr("data-disabled")
+    @$nextPage.removeAttr("data-disabled")
+    if count is 0
+      @$prevPage.attr("data-disabled", true) if @skippedCount() is 0
+      @$nextPage.attr("data-disabled", true)
+    if @skippedCount() is 0
+      @$prevPage.attr("data-disabled", true)
 
 
   prevPage: (e) ->
     e.preventDefault()
-    skipped = @model.get('lastFind')?.options.skip ? 0
-    @model.filterPrevious(skip: skipped - @model.defaults.limit)
+    return if @$prevPage.attr("data-disabled") is "true"
+    @model.filterPrevious(skip: @skippedCount() - @model.defaults.limit)
 
 
   nextPage: (e) ->
     e.preventDefault()
-    skipped = @model.get('lastFind')?.options.skip ? 0
-    @model.filterPrevious(skip: skipped + @model.defaults.limit)
+    return if @$nextPage.attr("data-disabled") is "true"
+    @model.filterPrevious(skip: @skippedCount() + @model.defaults.limit)
 
 
   refresh: (e) ->
@@ -35,5 +65,9 @@ class @FooterView extends Backbone.View
     @model.filterPrevious()
     
 
+  skippedCount: -> @model.get('lastFind')?.options.skip ? 0
+  resultName: (count) ->
+    @model.resultName(count)
+
   updateStatus: (message) ->
-    @$("[data-name=status]").text(message)
+    @$status.text(message)

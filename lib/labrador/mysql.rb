@@ -2,7 +2,8 @@ module Labrador
   class Mysql
     extend Configuration
     include RelationalStore
-
+    include ViewHelper
+    
     attr_accessor :host, :port, :database, :socket, :session
 
     DEFAULT_PORT = 3306
@@ -48,6 +49,21 @@ module Labrador
     def primary_key_for(collection_name)
       result = session.query("SHOW INDEX FROM #{collection_name}").first
       result && result["Column_name"]
+    end
+
+    def id
+      "mysql"
+    end
+
+    def name
+      I18n.t('adapters.mysql.title')
+    end
+
+    def as_json(options = nil)
+      {
+        id: self.id,
+        name: self.name
+      }
     end
   end
 end

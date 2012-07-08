@@ -2,6 +2,7 @@ module Labrador
   class Sqlite
     extend Configuration
     include RelationalStore
+    include ViewHelper
 
     attr_accessor :host, :port, :database, :socket, :session
 
@@ -38,6 +39,17 @@ module Labrador
     def primary_key_for(collection_name)
       result = session.table_info(collection_name).select{|field| field["pk"] == 1 }.first
       result && result["name"]
+    end
+
+    def id
+      "sqlite"
+    end
+
+    def as_json(options = nil)
+      {
+        id: self.id,
+        name: self.name
+      }
     end
   end
 end

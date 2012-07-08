@@ -75,7 +75,6 @@ class @TableView extends Backbone.View
     @$el[0].removeEventListener('dblclick', this)
     @$el[0].addEventListener 'dblclick', ((e) =>
       return if @doubleClicked
-      console.log 'init dblclick'
       @doubleClicked = true
       @$el.find("td").off('dblclick').on 'dblclick', (e) => 
         App.hideTooltips()

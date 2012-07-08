@@ -1,5 +1,7 @@
 html
   height: 100%
+[data-disabled=true]
+  opacity: 0.5
 body
   margin-top: 0
   height: 100%
@@ -183,8 +185,16 @@ footer
   [data-name='status']
     padding-left: 6px
 
+
 .nav-list
   padding: 0
+  clear: both
+  .nav-header
+    padding-left: 24px
+    &:hover
+      background: none
+    b
+      color: #252122
   > li
     > a
       color: #000000
@@ -251,6 +261,9 @@ footer
   &.sidebar-nav
     height: 100%
     overflow: auto
+    > .btn-group
+      padding-left: 8px
+      margin-bottom: 4px
   > ul
     overflow: hidden
     li
@@ -260,6 +273,9 @@ footer
       border-bottom: 1px solid transparent
 
 .progress
+  -webkit-border-radius: 0
+  -moz-border-radius: 0
+  border-radius: 0
   .bar
     background: #3d71d6
     opacity: 0.30

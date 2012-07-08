@@ -1,9 +1,16 @@
 <% content_for :sidebar do %>
-  <% @collections.each do |collection| %>
-    <li>
-      <a href='#' data-collection='<%= collection %>'><i class="icon-list"></i> <%= collection %></a>
+  <ul class="nav nav-list">
+    <li class="nav-header">      
+      <b><%= current_application %></b> <%= @adapter.collection_name(2) %>
     </li>
-  <% end %>
+  </ul>
+  <ul id="collections" class="nav nav-list">
+    <% @collections.each do |collection| %>
+      <li>
+        <a href='#' data-collection='<%= collection %>'><i class="icon-list"></i> <%= collection %></a>
+      </li>
+    <% end %>
+  </ul>
 <% end %>
 
 <div id='find-progress' class="progress progress-striped active">

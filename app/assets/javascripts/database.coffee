@@ -3,6 +3,19 @@ class @Database extends Backbone.Model
   defaults:
     limit: 500
 
+
+  name: -> 
+    I18n.t("adapters.#{@get('id')}.title")
+
+
+  collectionName: (count = 1) -> 
+    I18n.t("adapters.#{@get('id')}.collection", count: count)
+
+
+  resultName: (count = 1) -> 
+    I18n.t("adapters.#{@get('id')}.result", count: count)   
+
+
   fetchCollections: (callback) ->
     $.ajax
       url: "/data/#{@get('adapter')}/collections"
@@ -17,7 +30,7 @@ class @Database extends Backbone.Model
     options.skip ?= 0
     options.limit ?= @defauls.limit
     @set(lastFind: {collection, options, callback})
-    @trigger('before:send', options)
+    @trigger('before:send', collection, options)
     $.ajax
       url: "/data/#{@get('adapter')}?collection=#{collection}"
       data: options

@@ -2,7 +2,8 @@ module Labrador
   class Postgres
     extend Configuration
     include RelationalStore
-
+    include ViewHelper
+    
     attr_accessor :host, :port, :database, :session
 
     DEFAULT_PORT = 5432
@@ -59,6 +60,21 @@ module Labrador
           AND indisprimary
       ").first
       result && result["attname"]
-    end   
+    end
+
+    def id
+      "postgres"
+    end
+
+    def name
+      I18n.t('adapters.postgres.title')
+    end
+
+    def as_json(options = nil)
+      {
+        id: self.id,
+        name: self.name
+      }
+    end  
   end
 end

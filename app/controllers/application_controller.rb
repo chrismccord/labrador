@@ -9,7 +9,13 @@ class ApplicationController < ActionController::Base
     "sqlite"=>  {}
   }
 
+  helper_method :exports, :current_application
+
   private
+
+  def exports
+    gon
+  end
 
   def parse_options
     params.slice(:limit, :order_by, :direction, :conditions, :skip)
@@ -55,6 +61,10 @@ class ApplicationController < ActionController::Base
     rescue 
       nil
     end
+  end
+
+  def current_application
+    request.subdomain
   end
 
   def find_applications

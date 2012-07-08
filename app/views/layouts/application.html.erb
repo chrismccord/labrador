@@ -6,6 +6,7 @@
     <%= stylesheet_link_tag    "application", :media => "all" %>
     <%= javascript_include_tag "application" %>
     <%= csrf_meta_tags %>
+    <%= include_gon(:namespace => 'serverExports', :camel_case => true) %>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -35,7 +36,7 @@
           <a class="brand" href="#"><img src="/assets/logo.png" />Labrador</a>
           <div class="btn-group pull-right">
             <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-              <i class="icon-user"></i> Applications
+              <i class="icon-folder-open"></i> <%= current_application %>
               <span class="caret"></span>
             </a>
             <ul class="dropdown-menu">
@@ -61,10 +62,7 @@
       <div class="row-fluid">
         <div class="span3">
           <div class="well sidebar-nav">
-            <ul id="collections" class="nav nav-list">
-              <li class="nav-header">Collections</li>
-              <%= yield :sidebar %>
-            </ul>
+            <%= yield :sidebar %>
           </div><!--/.well -->
         </div><!--/span-->
         <div class="span9">

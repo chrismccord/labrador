@@ -2,6 +2,7 @@ module Labrador
   class MongoDB
     extend Configuration
     include Store
+    include ViewHelper
     
     attr_accessor :host, :port, :user, :database, :session
 
@@ -35,6 +36,21 @@ module Labrador
         .skip(skip)
         .sort("#{order_by}" => direction)
         .as_json
+    end
+
+    def id
+      "mongodb"
+    end
+
+    def name
+      I18n.t('adapters.mongodb.title')
+    end
+
+    def as_json(options = nil)
+      {
+        id: self.id,
+        name: self.name
+      }
     end
   end
 end
