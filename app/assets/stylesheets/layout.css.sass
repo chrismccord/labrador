@@ -1,0 +1,277 @@
+html
+  height: 100%
+body
+  margin-top: 0
+  height: 100%
+.container-fluid
+  height: 100%
+  padding-left: 1px
+  padding-right: 1px
+.row-fluid
+  height: 100%
+.span3
+  height: 100%
+  width: 23.076923077%
+.span9
+  height: 100%
+  margin-left: 0!important
+  width: 76.358974%!important
+.popover
+  .popover-title
+    padding: 6px 15px
+    background: rgba(238, 238, 238, 0.95)
+    border-bottom: 1px solid #bcbcbc
+    color: #8d8383
+    font-weight: normal
+    text-shadow: 0px 1px 1px #ffffff
+
+    font-size: 13px
+    text-align: center
+  .arrow
+    opacity: 0.55
+    top: -2px !important
+    margin-left: -8px !important
+    border-right: 8px solid transparent !important
+    border-bottom: 8px solid black !important
+    border-left: 8px solid transparent !important
+  .popover-content
+    border-top: 1px solid #ffffff
+    overflow: auto
+    background: rgba(238, 238, 238, 0.95)
+  .popover-inner
+    background: none
+    padding: 0
+    border: 2px solid rgba(0, 0, 0, 0.50)
+
+div[data-view=main]
+  .progress
+    margin: 0
+
+/* define height and width of scrollable area. Add 16px to width for scrollbar          */
+div.fixed-table-container
+  background: #ffffff
+  clear: both
+  border: 1px solid #b4b4b4
+  border-left: 0
+  height: 100%
+  overflow: auto
+  width: 100%
+  padding-bottom: 18px
+  .progress
+    display: none
+  > table
+    width: 100%
+    table-layout: fixed
+    th,td
+      font-size: 12px
+      line-height: 10px
+      min-width: 120px
+      &[data-expanded=true]
+        width: auto
+        max-width: 100%
+        overflow: visible
+      &[data-type=number]
+        text-align: right
+      &[data-type=string]
+        text-align: left
+    > thead
+      tr
+        position: relative
+        display: inline-block
+        background: #ededed
+        border-bottom: 1px solid #b6b6b6
+        th  
+          font-weight: normal
+          height: 14px
+
+          overflow: hidden
+          border-right: 1px solid #dddddd
+          &[data-expanded=true]
+            &:hover
+              .icon-arrow-left
+                display: inline-block
+                cursor: pointer
+              .icon-arrow-right
+                display: none
+          &:hover
+            .icon-arrow-right
+              display: inline-block
+              cursor: pointer    
+          [data-action='asc'], [data-action='desc']
+            display: none        
+          &[data-direction='asc']
+            [data-action='asc']
+              display: inline-block
+          &[data-direction='desc']
+            [data-action='desc']
+              display: inline-block              
+          > span
+            line-height: 14px
+         
+          .icon-arrow-right, .icon-arrow-left
+            display: none
+
+
+    > tbody
+      display: block
+      height: 262px
+      width: 100%
+      tr
+        border: 0
+        &.odd
+          background: #f3f6fa
+
+        &[data-active=true]
+          background: #3d71d6
+          td
+            color: #f3fcf3
+      td        
+        border: 0
+        white-space: nowrap
+        .value
+          display: none
+        .truncated
+          display: block
+        
+        &[data-expanded=true]
+          .value
+            display: block
+          .truncated
+            display: none
+
+
+footer
+  position: fixed
+  width: 100%
+  height: 26px
+  line-height: 26px
+  background: #dddddd
+  bottom: 0
+  border-top: 1px solid #676867
+  background-image: linear-gradient(bottom, #b0b0b0 5%, #c8c8c8 33%, #E7E7E7 94%)
+  background-image: -o-linear-gradient(bottom, #b0b0b0 5%, #c8c8c8 33%, #E7E7E7 94%)
+  background-image: -moz-linear-gradient(bottom, #b0b0b0 5%, #c8c8c8 33%, #E7E7E7 94%)
+  background-image: -webkit-linear-gradient(bottom, #b0b0b0 5%, #c8c8c8 33%, #E7E7E7 94%)
+  background-image: -ms-linear-gradient(bottom, #b0b0b0 5%, #c8c8c8 33%, #E7E7E7 94%)
+  background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0.05, #b0b0b0),color-stop(0.33, #c8c8c8),color-stop(0.94, #E7E7E7))
+  .pull-right
+    margin-right: 12px
+  .pull-left:
+    margin-left: 12px
+  i[data-action]
+    &:hover
+      cursor: pointer
+  .span3
+    margin: 0
+  .span9
+    margin: 0
+  ul
+    list-style: none
+    li
+      float: left
+      border-right: 1px solid #7f7f7f
+      border-left: 1px solid #d5d5d5
+      &:first-child
+        border-left: 0
+      line-height: 28px
+      display: inline-block
+      width: 28px
+      text-align: center
+      &:hover
+        cursor: pointer
+        background: #b0b0b0
+  [data-name='status']
+    padding-left: 6px
+
+.nav-list
+  padding: 0
+  > li
+    > a
+      color: #000000
+    > a:hover
+      background: none
+    &:hover
+      background: #d0d2d7
+  > .active, > :hover.active
+    border-bottom: 1px solid #93a0b9
+    border-top: 1px solid #bbc5d6
+    background-color: #5199d8
+    background-image: linear-gradient(bottom, #9da9c5 0%, #c4ccdf 73%)
+    background-image: -o-linear-gradient(bottom, #9da9c5 0%, #c4ccdf 73%)
+    background-image: -moz-linear-gradient(bottom, #9da9c5 0%, #c4ccdf 73%)
+    background-image: -webkit-linear-gradient(bottom, #9da9c5 0%, #c4ccdf 73%)
+    background-image: -ms-linear-gradient(bottom, #9da9c5 0%, #c4ccdf 73%)
+    background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #9da9c5),color-stop(0.73, #c4ccdf))
+    > a, > a:hover
+      color: #f5ffff
+      background: none
+
+.navbar
+  margin-bottom: 0
+  .navbar-inner
+    -webkit-border-radius: 0
+    -moz-border-radius: 0
+    border-radius: 0
+    background-image: linear-gradient(bottom, #b0b0b0 5%, #c8c8c8 33%, #E7E7E7 94%)
+    background-image: -o-linear-gradient(bottom, #b0b0b0 5%, #c8c8c8 33%, #E7E7E7 94%)
+    background-image: -moz-linear-gradient(bottom, #b0b0b0 5%, #c8c8c8 33%, #E7E7E7 94%)
+    background-image: -webkit-linear-gradient(bottom, #b0b0b0 5%, #c8c8c8 33%, #E7E7E7 94%)
+    background-image: -ms-linear-gradient(bottom, #b0b0b0 5%, #c8c8c8 33%, #E7E7E7 94%)
+    background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0.05, #b0b0b0),color-stop(0.33, #c8c8c8),color-stop(0.94, #E7E7E7))
+    -webkit-box-shadow: none
+    -moz-box-shadow:none
+    box-shadow: none
+    border-bottom: 1px solid #676867
+    .brand
+      text-indent: 48px
+      color: #3b3c3b
+      text-shadow: 0px 1px 1px #ffffff
+      img
+        height: 30px
+        position: absolute
+        top: 5px
+
+.well
+  padding-left: 0
+  padding-right: 0
+  background-color: #ffffff
+  -webkit-border-radius: 0
+  -moz-border-radius: 0
+  border-radius: 0
+  border-right: 1px solid #b4b4b4
+  border-left: 0
+
+  background-image: linear-gradient(bottom, #d7dde4 0%, #e9edf1 25%)
+  background-image: -o-linear-gradient(bottom, #d7dde4 0%, #e9edf1 25%)
+  background-image: -moz-linear-gradient(bottom, #d7dde4 0%, #e9edf1 25%)
+  background-image: -webkit-linear-gradient(bottom, #d7dde4 0%, #e9edf1 25%)
+  background-image: -ms-linear-gradient(bottom, #d7dde4 0%, #e9edf1 25%)
+  background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, #d7dde4),color-stop(0.25, #e9edf1))
+
+  &.sidebar-nav
+    height: 100%
+    overflow: auto
+  > ul
+    overflow: hidden
+    li
+      padding-left: 18px
+      padding-right: 18px
+      border-top: 1px solid transparent
+      border-bottom: 1px solid transparent
+
+.progress
+  .bar
+    background: #3d71d6
+    opacity: 0.30
+    background-color: #6390e9
+    background-image: -o-linear-gradient(-45deg, rgba(61, 113, 214, 0.99) 25%, transparent 25%, transparent 50%, rgba(61, 113, 214, 0.99) 50%, rgba(61, 113, 214, 0.99) 75%, transparent 75%, transparent)
+    background-image: -webkit-linear-gradient(-45deg, rgba(61, 113, 214, 0.99) 25%, transparent 25%, transparent 50%, rgba(61, 113, 214, 0.99) 50%, rgba(61, 113, 214, 0.99) 75%, transparent 75%, transparent)
+    background-image: -moz-linear-gradient(-45deg, rgba(61, 113, 214, 0.99) 25%, transparent 25%, transparent 50%, rgba(61, 113, 214, 0.99) 50%, rgba(61, 113, 214, 0.99) 75%, transparent 75%, transparent)
+    background-image: -ms-linear-gradient(-45deg, rgba(61, 113, 214, 0.99) 25%, transparent 25%, transparent 50%, rgba(61, 113, 214, 0.99) 50%, rgba(61, 113, 214, 0.99) 75%, transparent 75%, transparent)
+    background-image: -webkit-gradient(linear, 0 100%, 100% 0, color-stop(0.25, rgba(61, 113, 214, 0.99)), color-stop(0.25, transparent), color-stop(0.5, transparent), color-stop(0.5, rgba(61, 113, 214, 0.99)), color-stop(0.75, rgba(61, 113, 214, 0.99)), color-stop(0.75, transparent), to(transparent))
+    background-image: linear-gradient(-45deg, rgba(61, 113, 214, 0.99) 25%, transparent 25%, transparent 50%, rgba(61, 113, 214, 0.99) 50%, rgba(61, 113, 214, 0.99) 75%, transparent 75%, transparent)
+    -webkit-background-size: 40px 40px
+    -moz-background-size: 40px 40px
+    -o-background-size: 40px 40px
+    background-size: 40px 40px    
+

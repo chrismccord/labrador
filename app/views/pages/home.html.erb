@@ -1,0 +1,21 @@
+<% content_for :sidebar do %>
+  <% @collections.each do |collection| %>
+    <li>
+      <a href='#' data-collection='<%= collection %>'><i class="icon-list"></i> <%= collection %></a>
+    </li>
+  <% end %>
+<% end %>
+
+<div id='find-progress' class="progress progress-striped active">
+  <div class="bar"></div>
+</div>
+<div class="fixed-table-container">
+  <table class="table table-condensed">
+    <thead>
+      <tr class="odd">
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+</div>
