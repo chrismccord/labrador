@@ -3,6 +3,7 @@
 
 en:
   adapters:
+    unsupported_adapter: "Unsupported adapter '%{adapter}'"
     mongodb:
       title: "MongoDB"
       result:
@@ -35,6 +36,10 @@ en:
       collection: 
         one: "table"
         other: "tables"
+
+  flash:
+    notice:
+      invalid_adapter: "The %{adapter} database configuration for %{app} could not be loaded."
 
   status:
     requesting: "requesting %{collection}"

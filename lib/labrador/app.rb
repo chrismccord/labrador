@@ -44,10 +44,14 @@ module Labrador
       end
     end
 
-    def adapters
+    def adapter_names
       [database_yml_config, mongoid_yml_config].collect do |config|
         config["adapter"]
       end
+    end
+
+    def adapter_configruations
+      [database_yml_config, mongoid_yml_config].select{|conf| conf }
     end
 
     def to_s

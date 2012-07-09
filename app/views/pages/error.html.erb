@@ -1,0 +1,24 @@
+<!-- Main hero unit for a primary marketing message or call to action -->
+<div class="hero-unit">
+  <h1><em class="error">x</em>Something went wrong</h1>
+  <br/>
+  <p>
+    <%= flash[:notice] %>
+  </p>
+  <% if flash[:error] %>
+    <p>
+      <code><%= flash[:error] %></code>
+    </p>
+  <% end %>
+
+  <% if flash[:dump] %>
+    <p>
+      <pre><%= flash[:dump].to_yaml %></pre>
+    </p>
+  <% end %>
+  <ul>
+    <li><a href="#">User Manual</a></li>
+    <li><a href="#">Issue Tracker</a></li>
+  </ul>
+</div>
+

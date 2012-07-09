@@ -8,7 +8,9 @@ class ApplicationController < ActionController::Base
     "postgresql" => {},
     "mysql" => {},
     "mysql2" => {},
-    "sqlite"=>  {}
+    "sqlite" => {},
+    "sqlite2" => {},
+    "sqlite3" => {}
   }
 
   helper_method :exports, :current_app
@@ -26,25 +28,27 @@ class ApplicationController < ActionController::Base
   def find_adapters
     @adapters = []
     if current_app
-      [current_app.database_yml_config, current_app.mongoid_yml_config].each do |conf|
-        next if conf.nil?
-        credentials = {
-          host: conf["host"],
-          user: conf["username"],
-          database: conf["database"],
-          password: conf["password"]
-        }
-        @adapters << case conf["adapter"]
-        when "mongodb"
-          @@connections[conf["adapter"]][conf["database"]] ||= Labrador::MongoDB.new(credentials)
-        when "postgresql"
-          @@connections[conf["adapter"]][conf["database"]] ||= Labrador::Postgres.new(credentials)
-        when "mysql", "mysql2"
-          @@connections[conf["adapter"]][conf["database"]] ||= Labrador::Mysql.new(credentials)
-        when "sqlite"
-          @@connections[conf["adapter"]][conf["database"]] ||= Labrador::Sqlite.new(credentials)
-        else
-          raise 'Invalid adapter'
+      current_app.adapter_configruations.each do |conf|
+        begin
+          @adapters << case conf["adapter"]
+          when "mongodb"
+            @@connections[conf["adapter"]][conf["database"]] ||= Labrador::MongoDB.new(credentials)
+          when "postgresql"
+            @@connections[conf["adapter"]][conf["database"]] ||= Labrador::Postgres.new(credentials)
+          when "mysql", "mysql2"
+            @@connections[conf["adapter"]][conf["database"]] ||= Labrador::Mysql.new(credentials)
+          when "sqlite", "sqlite2", "sqlite3"
+            @@connections[conf["adapter"]][conf["database"]] ||= Labrador::Sqlite.new(credentials)
+          else
+            raise t('adapters.unsupported_adapter', adapter: conf["adapter"])
+          end
+        rescue Exception => e
+          flash[:dump] = conf
+          flash[:notice] = t('flash.notice.invalid_adapter', 
+            adapter: conf["adapter"], 
+            app: current_app.name)
+          flash[:error] = e.to_s
+          return redirect_to error_path
         end
       end
     end

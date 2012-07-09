@@ -1,9 +1,9 @@
 class PagesController < ApplicationController
 
-  layout 'bare', only: [:unauthorized]
+  layout 'bare', only: [:unauthorized, :error]
 
-  before_filter :find_applications  
-  before_filter :find_adapters
+  before_filter :find_applications, except: [:error, :unauthorized]  
+  before_filter :find_adapters, except: [:error, :unauthorized]
 
   def home
     exports.app = current_app.as_json
@@ -11,5 +11,8 @@ class PagesController < ApplicationController
   end
 
   def unauthorized    
+  end
+
+  def error
   end
 end
