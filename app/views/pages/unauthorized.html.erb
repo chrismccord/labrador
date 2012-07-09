@@ -1,22 +1,19 @@
 <!-- Main hero unit for a primary marketing message or call to action -->
 <div class="hero-unit">
-  <h1><em class="error">x</em>Incomplete Configuration</h1>
+  <h1><em class="error">x</em><%= t('pages.unauthorized.title') %></h1>
   <br/>
   <p>
-    Labrador requires HTTP Basic Authentication environmenet variables to protect your 
-    development databases from unauthorized access.
+    <%= t('pages.unauthorized.message').html_safe %>
   </p>
   <p>
-    Add your <code>ENV['LABRADOR_USER']</code> and <code>ENV['LABRADOR_PASS']</code> 
-    credentials to the file 
-    <code><%= File.expand_path("config/initializers/auth.rb") %></code>
-    <br/>
-    and restart your server
+    <%= t('pages.unauthorized.explanation', path: File.expand_path("config/initializers/auth.rb")).html_safe %>
   </p>
+  <a href="<%= root_url %>" class="btn">
+    <i class="icon-refresh"></i> 
+    <%= t('pages.error.try_again') %>
+  </a>
   <br/>
-  <ul>
-    <li><a href="#">User Manual</a></li>
-    <li><a href="#">Issue Tracker</a></li>
-  </ul>
+  <br/>
+  <%= render 'shared/help' %>
 </div>
 

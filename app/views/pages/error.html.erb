@@ -1,6 +1,6 @@
 <!-- Main hero unit for a primary marketing message or call to action -->
 <div class="hero-unit">
-  <h1><em class="error">x</em>Something went wrong</h1>
+  <h1><em class="error">x</em><%= t('pages.error.title') %></h1>
   <br/>
   <p>
     <%= flash[:notice] %>
@@ -16,9 +16,12 @@
       <pre><%= flash[:dump].to_yaml %></pre>
     </p>
   <% end %>
-  <ul>
-    <li><a href="#">User Manual</a></li>
-    <li><a href="#">Issue Tracker</a></li>
-  </ul>
+  <a href="<%= root_url %>" class="btn">
+    <i class="icon-refresh"></i> 
+    <%= t('pages.error.try_again') %>
+  </a>
+  <br/>
+  <br/>
+  <%= render 'shared/help' %>
 </div>
 

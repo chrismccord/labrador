@@ -29,6 +29,12 @@ class ApplicationController < ActionController::Base
     @adapters = []
     if current_app
       current_app.adapter_configruations.each do |conf|
+        credentials = {
+          host: conf["host"],
+          user: conf["username"],
+          database: conf["database"],
+          password: conf["password"]
+        }
         begin
           @adapters << case conf["adapter"]
           when "mongodb"

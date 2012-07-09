@@ -41,6 +41,18 @@ en:
     notice:
       invalid_adapter: "The %{adapter} database configuration for %{app} could not be loaded."
 
+  pages:
+    error:
+      title: "Something went wrong"
+      try_again: 'Try again'
+    help:
+      user_manual: "User Manual"
+      issue_tracker: "Issue Tracker"
+    unauthorized:
+      title: "Incomplete Configuration"
+      message: "Labrador requires HTTP Basic Authentication environmenet variables to protect your development databases from unauthorized access."
+      explanation: "Add your <code>ENV['LABRADOR_USER']</code> and <code>ENV['LABRADOR_PASS']</code> credentials to the file <br/><code>%{path}</code><br/>and restart your server."
+
   status:
     requesting: "requesting %{collection}"
     showing: "showing %{count} %{results}"
