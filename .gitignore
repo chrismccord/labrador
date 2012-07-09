@@ -11,7 +11,7 @@ config/database.yml
 .DS_Store
 # Ignore the default SQLite database.
 /db/*.sqlite3
-
+config/secret_token.yml
 # Ignore all logfiles and tempfiles.
 /log/*.log
 /tmp

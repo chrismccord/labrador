@@ -4,4 +4,8 @@
 # If you change this key, all old signed cookies will become invalid!
 # Make sure the secret is at least 30 characters and all random,
 # no regular words or you'll be exposed to dictionary attacks.
-Labrador::Application.config.secret_token = '0efc87057c422149371791ea7594911317923010769e8c7160ed4856ddd373a61a47db01662c18c0ed2ff475e0f7d84d30f332da08c3e0fe42c15089d0e373b2'
+
+unless File.exists?("config/secret_token.yml")
+  File.open("config/secret_token.yml", "w"){|f| f.puts SecureRandom.hex(rand(50) + 50).to_yaml }
+end
+Labrador::Application.config.secret_token = YAML.load(File.read("config/secret_token.yml"))

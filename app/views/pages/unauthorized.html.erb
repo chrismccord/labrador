@@ -1,0 +1,22 @@
+<!-- Main hero unit for a primary marketing message or call to action -->
+<div class="hero-unit">
+  <h1><em class="error">x</em>Incomplete Configuration</h1>
+  <br/>
+  <p>
+    Labrador requires HTTP Basic Authentication environmenet variables to protect your 
+    development databases from unauthorized access.
+  </p>
+  <p>
+    Add your <code>ENV['LABRADOR_USER']</code> and <code>ENV['LABRADOR_PASS']</code> 
+    credentials to the file 
+    <code><%= File.expand_path("config/initializers/auth.rb") %></code>
+    <br/>
+    and restart your server
+  </p>
+  <br/>
+  <ul>
+    <li><a href="#">User Manual</a></li>
+    <li><a href="#">Issue Tracker</a></li>
+  </ul>
+</div>
+

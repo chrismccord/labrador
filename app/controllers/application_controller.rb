@@ -1,6 +1,8 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
 
+  before_filter :http_authenticate, except: [:unauthorized]
+
   @@connections = {
     "mongodb" => {},
     "postgresql" => {},
@@ -83,5 +85,23 @@ class ApplicationController < ActionController::Base
 
   def app_name_from_url
     (request.subdomain.present? && request.subdomain) || path_param.split("/").last
+  end
+
+  def authenticated?
+    session[:authenticated]
+  end
+
+  def http_authenticate
+    unless ENV['LABRADOR_USER'].present? && ENV['LABRADOR_PASS'].present?
+      return redirect_to unauthorized_path
+    end
+    return if authenticated?
+
+    authenticate_or_request_with_http_basic do |username, password|
+      authenticated = (username == ENV['LABRADOR_USER'] && password == ENV['LABRADOR_PASS'])
+      session[:authenticated] = true if authenticated
+
+      authenticated
+    end
   end
 end
