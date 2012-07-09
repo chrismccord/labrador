@@ -53,7 +53,7 @@ class ApplicationController < ActionController::Base
   end
 
   def current_app
-    return unless app_name_from_url.to_yaml
+    return unless app_name_from_url
     @applications.select{|app| app.name == app_name_from_url }.first
   end
 
