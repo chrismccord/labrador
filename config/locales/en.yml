@@ -41,6 +41,15 @@ en:
     notice:
       invalid_adapter: "The %{adapter} database configuration for %{app} could not be loaded."
 
+  modals:
+    settings:
+      title: "Settings"
+      close: "Cancel"
+      apply: "Apply"
+      form:
+        limit:
+          label: "Limit results to"
+
   pages:
     error:
       title: "Something went wrong"

@@ -32,14 +32,14 @@ class @TableView extends Backbone.View
       @trigger('scroll')
     ), capture = true
 
-    @$el.find("tbody tr").off('click').on 'click', (e) =>
+    @$el.find("tbody").off('click', 'tr').on 'click', 'tr', (e) =>
       e.preventDefault()
       $target = $(e.currentTarget)
       $target.attr("data-active", true)
       @$el.find("tr[data-active=true]").not($target).removeAttr("data-active")
      
 
-    @$el.find("th").off('click').on 'click', (e) =>
+    @$el.find("thead").off('click', 'th').on 'click', 'th', (e) =>
       e.preventDefault()
       $target = $(e.currentTarget)
       field = $target.attr("data-field")
@@ -76,11 +76,11 @@ class @TableView extends Backbone.View
     @$el[0].addEventListener 'dblclick', ((e) =>
       return if @doubleClicked
       @doubleClicked = true
-      @$el.find("td").off('dblclick').on 'dblclick', (e) => 
-        App.hideTooltips()
+      @$el.find("tbody").off('dblclick', 'td').on 'dblclick', 'td', (e) => 
+        app.hideTooltips()
         $pop = $(e.currentTarget)
-        App.popover($pop, placement: 'bottom', trigger: 'manual', title: $pop.attr('data-field'))
-        App.popover($pop, 'show')
+        app.popover($pop, placement: 'bottom', trigger: 'manual', title: $pop.attr('data-field'))
+        app.popover($pop, 'show')
         $(e.currentTarget).find("[rel=popover]").on('mouseout').popover('hide')   
     ), capture = true
 
@@ -151,7 +151,7 @@ class @TableView extends Backbone.View
 
 
   render: (fields, items) ->
-    App.hideTooltips()
+    app.hideTooltips()
     @emptyBody()
     return @zeroState() if fields.length is 0 or items.length is 0
 
@@ -166,11 +166,11 @@ class @TableView extends Backbone.View
       @trigger('render')
 
   showLoading: (percentage) ->
-    App.progressView.show(percentage)
+    app.progressView.show(percentage)
 
   
   hideLoading: ->
-    App.progressView.hide()
+    app.progressView.hide()
 
 
   zeroState: ->

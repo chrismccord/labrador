@@ -1,8 +1,4 @@
 class @Database extends Backbone.Model
-  
-  defaults:
-    limit: 500
-
 
   name: -> 
     I18n.t("adapters.#{@get('id')}.title")
@@ -28,7 +24,7 @@ class @Database extends Backbone.Model
       callback = options 
       options = {}
     options.skip ?= 0
-    options.limit ?= @defauls.limit
+    options.limit ?= app.get('limit')
     @set(lastFind: {collection, options, callback})
     @trigger('before:send', collection, options)
     $.ajax
@@ -43,4 +39,5 @@ class @Database extends Backbone.Model
   filterPrevious: (newOptions = {}) ->
     return unless @get('lastFind')?
     {collection, options, callback} = @get('lastFind')
+    options.limit = app.get('limit')
     @find(collection, _.extend(options, newOptions), callback)

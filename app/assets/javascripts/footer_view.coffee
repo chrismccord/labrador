@@ -6,6 +6,7 @@ class @FooterView extends Backbone.View
     'click [data-action=next-page]'     : 'nextPage'
     'click [data-action=prev-page]'     : 'prevPage'
     'click [data-action=refresh]'       : 'refresh'
+    'click [data-action=config]'        : 'configure'
 
 
   initialize: ->
@@ -25,7 +26,7 @@ class @FooterView extends Backbone.View
     @model.on 'before:send', (collection, options) => 
       @updateStatus(I18n.t("status.requesting", collection: collection))
 
-    App.tableView.on 'render', =>
+    app.tableView.on 'render', =>
       count = @model.get('data').items.length
       @updatePagingState()
       @updateStatus(I18n.t("status.showing", count: count, results: @resultName(count)))
@@ -54,13 +55,13 @@ class @FooterView extends Backbone.View
   prevPage: (e) ->
     e.preventDefault()
     return if @$prevPage.attr("data-disabled") is "true"
-    @model.filterPrevious(skip: @skippedCount() - @model.defaults.limit)
+    @model.filterPrevious(skip: @skippedCount() - app.get('limit'))
 
 
   nextPage: (e) ->
     e.preventDefault()
     return if @$nextPage.attr("data-disabled") is "true"
-    @model.filterPrevious(skip: @skippedCount() + @model.defaults.limit)
+    @model.filterPrevious(skip: @skippedCount() + app.get('limit'))
 
 
   refresh: (e) ->
@@ -69,9 +70,31 @@ class @FooterView extends Backbone.View
     
 
   skippedCount: -> @model.get('lastFind')?.options.skip ? 0
+
   resultName: (count) ->
     @model.resultName(count)
 
+
   updateStatus: (message) ->
     @$status.text(message)
+
+
+  configure: (e) ->
+    e.preventDefault()
+    $modal = @$('.modal')
+    $apply = $modal.find("[data-action=apply]")
+    $limit = $modal.find("[data-name=limit]")
+
+    $limit.val(app.get('limit'))
+    $modal.modal()
+    $modal.find('form').off('submit').on 'submit', (e) => 
+      e.preventDefault()
+      $apply.trigger('click')
+
+    $apply.off('click').on 'click', =>
+      app.set(limit: Number($limit.val()))
+      $modal.modal('hide')
+
+
+
 

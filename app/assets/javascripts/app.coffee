@@ -1,14 +1,18 @@
-@App =
+class @App extends Backbone.Model
   
+  defaults:
+    limit: 500
+
   tooltipsVisible: false
 
-  init: ->
-    @database = new Database(path: serverExports.app.path)
-    @tableView = new TableView(model: @database, el: ".fixed-table-container table:first")
-    @progressView = new ProgressView()  
-    @footerView = new FooterView(model: @database)
-    @resizeBody()
-    @bind()
+  initialize: ->
+    $ =>
+      @database = new Database(path: serverExports.app.path)
+      @tableView = new TableView(model: @database, el: ".fixed-table-container table:first")
+      @progressView = new ProgressView()  
+      @footerView = new FooterView(model: @database)
+      @resizeBody()
+      @bind()
 
 
   bind: ->
@@ -26,7 +30,7 @@
       databaseId = $target.attr('data-adapter')
       @database.set(id: databaseId)
       @tableView.showLoading()
-      @database.find collection, limit: 500, (err, data) => @database.set({data: data})
+      @database.find collection, limit: @get('limit'), (err, data) => @database.set({data: data})
 
     $(document).on 'keydown', (e) => 
       switch e.keyCode
@@ -50,5 +54,6 @@
     $('.popover').remove()
 
 
-$ ->
-  App.init()
+
+@app = new App()
+
