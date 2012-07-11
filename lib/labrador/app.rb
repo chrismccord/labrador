@@ -45,7 +45,7 @@ module Labrador
     end
 
     def adapter_names
-      [database_yml_config, mongoid_yml_config].collect do |config|
+      [database_yml_config, mongoid_yml_config].select{|c| c }.collect do |config|
         config["adapter"]
       end
     end

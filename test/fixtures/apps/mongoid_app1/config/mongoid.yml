@@ -1,0 +1,19 @@
+defaults: &defaults
+  identity_map_enabled: true
+  persist_in_safe_mode: true
+
+development:
+  <<: *defaults
+  host: localhost
+  database: labrador_development
+
+test:
+  <<: *defaults
+  host: localhost
+  database: labrador_test
+
+# set these environment variables on your prod server
+production:
+  <<: *defaults
+  logger: false
+  uri: <%= ENV['CUSTOM_MONGOHQ_URL']
