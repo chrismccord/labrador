@@ -37,33 +37,10 @@ describe Labrador::App do
     end
   end
 
-  describe '#database_yml_config' do
-    it 'should find database.yml configuration' do
-      app = Labrador::App.find_all_from_path("test/fixtures/apps").first
-      assert app.database_yml_config
-      assert_equal "mysql2", app.database_yml_config["adapter"]
-    end
-  end
-
-  describe '#mongoid_yml_config' do
-    it 'should find mongoid.yml configuration' do
-      app = Labrador::App.find_all_from_path("test/fixtures/apps").third
-      assert app.mongoid_yml_config
-      assert_equal "mongodb", app.mongoid_yml_config["adapter"]
-    end
-  end
-
   describe '#adapter_names' do
     it 'should collect adapter names' do
       app = Labrador::App.find_all_from_path("test/fixtures/apps").first
       assert_equal ["mysql2"], app.adapter_names
-    end
-  end
-
-  describe '#adapter_configruations' do
-    it 'should aggregate all adapter configurations' do
-      app = Labrador::App.find_all_from_path("test/fixtures/apps").first
-      assert_equal app.database_yml_config, app.adapter_configruations.first
     end
   end
 

@@ -63,11 +63,11 @@ module Labrador
     end
 
     def id
-      "postgres"
+      "postgresql"
     end
 
     def name
-      I18n.t('adapters.postgres.title')
+      I18n.t('adapters.postgresql.title')
     end
 
     def as_json(options = nil)

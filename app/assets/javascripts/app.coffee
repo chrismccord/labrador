@@ -27,8 +27,8 @@ class @App extends Backbone.Model
       $("#collections li").removeClass('active')
       $target.parent('li').addClass('active')
       collection = $target.attr('data-collection')
-      databaseId = $target.attr('data-adapter')
-      @database.set(id: databaseId)
+      adapter = $target.attr('data-adapter')
+      @database.set(adapter: adapter)
       @tableView.showLoading()
       @database.find collection, limit: @get('limit'), (err, data) => @database.set({data: data})
 

@@ -20,7 +20,15 @@ en:
       collection: 
         one: "table"
         other: "tables"
-    postgres:
+    mysql2:
+      title: "MySQL"
+      result:
+        one: "record"
+        other: "records"
+      collection: 
+        one: "table"
+        other: "tables"
+    postgresql:
       title: "PostgreSQL"
       result:
         one: "record"
@@ -29,6 +37,22 @@ en:
         one: "table"
         other: "tables"
     sqlite:
+      title: "SQLite"
+      result:
+        one: "record"
+        other: "records"
+      collection: 
+        one: "table"
+        other: "tables"
+    sqlite2:
+      title: "SQLite"
+      result:
+        one: "record"
+        other: "records"
+      collection: 
+        one: "table"
+        other: "tables"
+    sqlite3:
       title: "SQLite"
       result:
         one: "record"

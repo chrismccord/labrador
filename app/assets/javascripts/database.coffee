@@ -1,20 +1,20 @@
 class @Database extends Backbone.Model
 
   name: -> 
-    I18n.t("adapters.#{@get('id')}.title")
+    I18n.t("adapters.#{@get('adapter')}.title")
 
 
   collectionName: (count = 1) -> 
-    I18n.t("adapters.#{@get('id')}.collection", count: count)
+    I18n.t("adapters.#{@get('adapter')}.collection", count: count)
 
 
   resultName: (count = 1) -> 
-    I18n.t("adapters.#{@get('id')}.result", count: count)   
+    I18n.t("adapters.#{@get('adapter')}.result", count: count)   
 
 
   fetchCollections: (callback) ->
     $.ajax
-      url: "/data/#{@get('id')}/collections"
+      url: "/data/#{@get('adapter')}/collections"
       success: (data) -> callback?(null, data)
       error: (err) -> callback?(err)
 
@@ -27,8 +27,9 @@ class @Database extends Backbone.Model
     options.limit ?= app.get('limit')
     @set(lastFind: {collection, options, callback})
     @trigger('before:send', collection, options)
+    options.path = @get('path')
     $.ajax
-      url: "/data/#{@get('id')}?collection=#{collection}&path=#{@get('path')}"
+      url: "/data/#{@get('adapter')}?collection=#{collection}"
       data: options
       success: (data) ->         
         data.timestamp = (new Date()).valueOf() # Trigger 'change' if even data is the same

@@ -1,6 +1,11 @@
 module Labrador
   class App
-    attr_accessor :name, :path
+    attr_accessor :name, :path, :adapters, :adapter_errors
+
+    @@supported_files = [
+      "config/database.yml",
+      "config/mongoid.yml"
+    ]
 
     def self.find_all_from_path(path)
       path = File.expand_path(path)
@@ -17,41 +22,39 @@ module Labrador
 
     def self.is_supported_app?(directory)
       directory = File.expand_path(directory)
-      File.exists?("#{directory}/config/database.yml") ||
-      File.exists?("#{directory}/config/mongoid.yml")
+      @@supported_files.select{|file| File.exists?("#{directory}/#{file}") }.any?
     end
 
     def initialize(attributes = {})
       @name = attributes[:name]
       @path = attributes[:path]
+      @adapter_errors = []
+      @adapters = []
+      @connected = false
+
+      find_adapters
     end
 
-    def database_yml_config
-      path = File.expand_path("#{@path}/config/database.yml")
-      config = YAML.load(File.open(path))["development"] rescue nil
-    end
-
-    def mongoid_yml_config
-      path = File.expand_path("#{@path}/config/mongoid.yml")
-      config = begin
-        config = YAML.load(File.open(path))["development"]
-        # support mongoid 3
-        config = config["sessions"]["default"] if config["sessions"]
-        config["adapter"] ||= "mongodb"
-        config
-      rescue 
-        nil
+    def find_adapters
+      @@supported_files.each do |file|
+        path = File.expand_path("#{@path}/#{file}")
+        if File.exists?(path)
+          adapter = Adapter.new(path) 
+          @adapters << adapter if adapter.is_valid?
+        end
       end
+      
+      @adapters
     end
 
     def adapter_names
-      [database_yml_config, mongoid_yml_config].select{|c| c }.collect do |config|
-        config["adapter"]
-      end
+      @adapters.collect(&:name)
     end
 
-    def adapter_configruations
-      [database_yml_config, mongoid_yml_config].select{|conf| conf }
+    def connect
+      return if @connected
+      @adapters.each{|adapter| adapter.connect }
+      @connected = true
     end
 
     def to_s

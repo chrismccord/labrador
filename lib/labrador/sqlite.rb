@@ -45,6 +45,10 @@ module Labrador
       "sqlite"
     end
 
+    def name
+      I18n.t('adapters.sqlite.title')
+    end
+
     def as_json(options = nil)
       {
         id: self.id,

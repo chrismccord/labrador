@@ -2,13 +2,13 @@
   <% @adapters.each do |adapter| %>  
     <ul class="nav nav-list">
       <li class="nav-header">      
-        <b><%= current_app %></b> <%= adapter.collection_name(2) %>
+        <b><%= current_app %></b> <%= adapter.database.collection_name(2) %>
       </li>
     </ul>
     <ul id="collections" class="nav nav-list">
-      <% adapter.collections.each do |collection| %>
+      <% adapter.database.collections.each do |collection| %>
         <li>
-          <a href='#' data-adapter='<%= adapter.id %>' data-collection='<%= collection %>'><i class="icon-list"></i> <%= collection %></a>
+          <a href='#' data-adapter='<%= adapter.name %>' data-collection='<%= collection %>'><i class="icon-list"></i> <%= collection %></a>
         </li>
       <% end %>
     </ul>

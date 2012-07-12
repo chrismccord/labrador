@@ -7,7 +7,7 @@ class PagesController < ApplicationController
 
   def home
     exports.app = current_app.as_json
-    exports.databases = @adapters.as_json
+    exports.databases = @adapters.collect(&:database).as_json
   end
 
   def unauthorized    

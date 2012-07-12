@@ -3,15 +3,7 @@ class ApplicationController < ActionController::Base
 
   before_filter :http_authenticate, except: [:unauthorized]
 
-  @@connections = {
-    "mongodb" => {},
-    "postgresql" => {},
-    "mysql" => {},
-    "mysql2" => {},
-    "sqlite" => {},
-    "sqlite2" => {},
-    "sqlite3" => {}
-  }
+
 
   helper_method :exports, :current_app
 
@@ -27,39 +19,20 @@ class ApplicationController < ActionController::Base
   
   def find_adapters
     @adapters = []
-    if current_app
-      current_app.adapter_configruations.each do |conf|
-        credentials = {
-          host: conf["host"],
-          user: conf["username"],
-          database: conf["database"],
-          password: conf["password"]
-        }
-        begin
-          @adapters << case conf["adapter"]
-          when "mongodb"
-            @@connections[conf["adapter"]][conf["database"]] ||= Labrador::MongoDB.new(credentials)
-          when "postgresql"
-            @@connections[conf["adapter"]][conf["database"]] ||= Labrador::Postgres.new(credentials)
-          when "mysql", "mysql2"
-            @@connections[conf["adapter"]][conf["database"]] ||= Labrador::Mysql.new(credentials)
-          when "sqlite", "sqlite2", "sqlite3"
-            @@connections[conf["adapter"]][conf["database"]] ||= Labrador::Sqlite.new(credentials)
-          else
-            raise t('adapters.unsupported_adapter', adapter: conf["adapter"])
-          end
-        rescue Exception => e
-          flash[:dump] = conf
-          flash[:notice] = t('flash.notice.invalid_adapter', 
-            adapter: conf["adapter"], 
-            app: current_app.name)
-          flash[:error] = e.to_s
-          return redirect_to error_path
-        end
-      end
+    return unless current_app
+    current_app.connect
+    if current_app.adapters.collect(&:errors).flatten.any?
+      error = current_app.adapters.collect(&:errors).flatten.first
+      flash[:dump] = error[:dump]
+      flash[:notice] = t('flash.notice.invalid_adapter', 
+        adapter: error[:adapter], 
+        app: current_app.name
+      )
+      flash[:error] = error[:message]
+      return redirect_to error_path
     end
 
-    @adapters
+    @adapters = current_app.adapters
   end
 
   def current_app
@@ -68,7 +41,7 @@ class ApplicationController < ActionController::Base
   end
 
   def current_adapter
-    @adapters.select{|a| a.id == params[:adapter] }.first
+    @adapters.select{|a| a.name == params[:adapter] }.first
   end
 
   def find_applications
