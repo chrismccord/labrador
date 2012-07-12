@@ -5,5 +5,5 @@
 #  If you are accessing your Labrador process remotely, be sure it is on a network you trust.
 
 
-ENV['LABRADOR_USER'] = 'username'
-ENV['LABRADOR_PASS'] = 'password'
+# ENV['LABRADOR_USER'] = 'your_username'
+# ENV['LABRADOR_PASS'] = 'your_password'
