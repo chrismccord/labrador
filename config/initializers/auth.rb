@@ -1,3 +1,7 @@
+# ==================================================================================================
+# config/initializers/auth.rb
+# ==================================================================================================
+#
 # Labrador requires HTTP Basic Authentication.
 # Uncomment the following lines and set sensible credentials.
 #
