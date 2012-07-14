@@ -3,4 +3,9 @@ if [ -f "$rvm_path/scripts/rvm" ] && [ -f ".rvmrc" ]; then
   source ".rvmrc"
 fi
 
-export RAILS_ENV=production
+# Use production environment if app basename is ".labrador"
+DIR="$( basename "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" )"
+if [ $DIR == ".labrador" ]; then
+  export RAILS_ENV=production
+fi
+
