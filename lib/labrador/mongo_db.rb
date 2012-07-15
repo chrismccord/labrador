@@ -38,6 +38,18 @@ module Labrador
         .as_json
     end
 
+    def create(collection_name, data = {})
+      session[collection_name].insert(data, safe: true)
+    end
+
+    def update(collection_name, id, data = {})
+      session[collection_name].update({_id: BSON::ObjectId(id)}, {:"$set" => data}, {safe: true})
+    end
+
+    def delete(collection_name, id)
+      session[collection_name].remove({_id: BSON::ObjectId(id)}, {safe: true})
+    end
+
     def id
       "mongodb"
     end

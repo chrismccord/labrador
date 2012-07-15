@@ -64,4 +64,59 @@ describe Labrador::MongoDB do
       end
     end
   end
+
+
+  describe '#create' do
+    before do
+      @previousCount = @mongo.find(:users, limit: 1000).count
+      @mongo.create(:users, username: 'new_user', age: 100)
+      @newUser = @mongo.find(:users, limit: 1000).last
+    end
+    
+    it 'insert a new record into the collection' do
+      assert_equal @previousCount + 1, @mongo.find(:users, limit: 1000).count
+    end
+
+    it 'should create new record with given attributes' do
+      assert_equal 'new_user', @newUser["username"]
+      assert_equal 100, @newUser["age"]
+    end
+  end
+
+  describe '#update' do
+    before do
+      @previousCount = @mongo.find(:users, limit: 1000).count
+      @userBeforeUpdate = @mongo.find(:users, limit: 1000).first
+      @mongo.update(:users, @userBeforeUpdate["_id"], username: 'updated_name')
+      @userAfterUpdate = @mongo.find(:users, limit: 1000).first
+    end
+    
+    it 'should maintain collection count after update' do
+      assert_equal @previousCount, @mongo.find(:users, limit: 1000).count
+    end
+
+    it 'should update record with given attributes' do
+      assert_equal 'updated_name', @userAfterUpdate["username"]
+    end
+
+    it 'should not alter existing attributes not included for update' do
+      assert_equal @userBeforeUpdate["age"], @userAfterUpdate["age"]
+    end
+  end
+
+  describe '#delete' do
+    before do
+      @previousCount = @mongo.find(:users, limit: 1000).count
+      @firstUser = @mongo.find(:users, limit: 1000).first
+      @mongo.delete(:users, @firstUser["_id"])
+    end
+    
+    it 'should reduce collection record count by 1' do
+      assert_equal @previousCount - 1, @mongo.find(:users, limit: 1000).count
+    end
+
+    it 'should delete record with given id' do
+      assert @firstUser["_id"] != @mongo.find(:users, limit: 1000).first["_id"]
+    end
+  end
 end
