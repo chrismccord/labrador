@@ -50,6 +50,10 @@ module Labrador
       session[collection_name].remove({_id: BSON::ObjectId(id)}, {safe: true})
     end
 
+    def primary_key_for(collection_name)
+      "_id"
+    end
+
     def id
       "mongodb"
     end
