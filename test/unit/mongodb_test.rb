@@ -70,7 +70,8 @@ describe Labrador::MongoDB do
     before do
       @previousCount = @mongo.find(:users, limit: 1000).count
       @mongo.create(:users, username: 'new_user', age: 100)
-      @newUser = @mongo.find(:users, limit: 1000).last
+      @newUser = @mongo.find(:users, 
+        limit: 1000, order_by: '_id', direction: 'desc', limit: 1).first
     end
     
     it 'insert a new record into the collection' do
@@ -86,9 +87,11 @@ describe Labrador::MongoDB do
   describe '#update' do
     before do
       @previousCount = @mongo.find(:users, limit: 1000).count
-      @userBeforeUpdate = @mongo.find(:users, limit: 1000).first
+      @userBeforeUpdate = @mongo.find(:users, 
+        limit: 1000, order_by: '_id', directon: 'desc', limit: 1).first
       @mongo.update(:users, @userBeforeUpdate["_id"], username: 'updated_name')
-      @userAfterUpdate = @mongo.find(:users, limit: 1000).first
+      @userAfterUpdate = @mongo.find(:users, 
+        limit: 1000, order_by: '_id', directon: 'desc', limit: 1).first
     end
     
     it 'should maintain collection count after update' do
@@ -107,7 +110,8 @@ describe Labrador::MongoDB do
   describe '#delete' do
     before do
       @previousCount = @mongo.find(:users, limit: 1000).count
-      @firstUser = @mongo.find(:users, limit: 1000).first
+      @firstUser = @mongo.find(:users, 
+        limit: 1000, order_by: '_id', directon: 'asc', limit: 1).first
       @mongo.delete(:users, @firstUser["_id"])
     end
     
@@ -116,7 +120,9 @@ describe Labrador::MongoDB do
     end
 
     it 'should delete record with given id' do
-      assert @firstUser["_id"] != @mongo.find(:users, limit: 1000).first["_id"]
+      newFirst = @mongo.find(:users, 
+        limit: 1000, order_by: '_id', directon: 'asc', limit: 1).first
+      assert @firstUser["_id"] != newFirst["_id"]
     end
   end
 end
