@@ -15,3 +15,5 @@ config/secret_token.yml
 # Ignore all logfiles and tempfiles.
 /log/*.log
 /tmp
+test/fixtures/sqlite.sqlite3
+
