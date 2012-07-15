@@ -38,6 +38,8 @@ class @App extends Backbone.Model
           e.preventDefault()
           @hideTooltips() 
 
+    @database.on 'error', (data) => @showError("Caught error from database: #{data.error}")
+
   
   resizeBody: ->
     $("[data-view=main]").css(height: $(window).height() - 104)
@@ -53,6 +55,9 @@ class @App extends Backbone.Model
     @tooltipsVisible = false    
     $('.popover').remove()
 
+
+  showError: (error) ->
+    console.log error
 
 
 @app = new App()
