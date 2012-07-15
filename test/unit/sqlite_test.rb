@@ -70,4 +70,64 @@ describe Labrador::Sqlite do
       end
     end
   end
+
+  describe '#create' do
+    before do
+      @previousCount = @sqlite.find(:users, limit: 1000).count
+      @sqlite.create(:users, id: 999, username: 'new_user', age: 100)
+      @newUser = @sqlite.find(:users, 
+        limit: 1000, order_by: 'id', direction: 'desc', limit: 1).first
+    end
+    
+    it 'insert a new record into the collection' do
+      assert_equal @previousCount + 1, @sqlite.find(:users, limit: 1000).count
+    end
+
+    it 'should create new record with given attributes' do
+      assert_equal 'new_user', @newUser["username"]
+      assert_equal 100, @newUser["age"].to_i
+    end
+  end
+
+  describe '#update' do
+    before do
+      @previousCount = @sqlite.find(:users, limit: 1000).count
+      @userBeforeUpdate = @sqlite.find(:users, 
+        limit: 1000, order_by: 'id', directon: 'desc', limit: 1).first
+      @sqlite.update(:users, @userBeforeUpdate["id"], username: 'updated_name')
+      @userAfterUpdate = @sqlite.find(:users, 
+        limit: 1000, order_by: 'id', directon: 'desc', limit: 1).first
+    end
+    
+    it 'should maintain collection count after update' do
+      assert_equal @previousCount , @sqlite.find(:users, limit: 1000).count
+    end
+
+    it 'should update record with given attributes' do
+      assert_equal 'updated_name', @userAfterUpdate["username"]
+    end
+
+    it 'should not alter existing attributes not included for update' do
+      assert_equal @userBeforeUpdate["age"], @userAfterUpdate["age"]
+    end
+  end
+
+  describe '#delete' do
+    before do
+      @previousCount = @sqlite.find(:users, limit: 1000).count
+      @firstUser = @sqlite.find(:users, 
+        limit: 1000, order_by: 'id', directon: 'asc', limit: 1).first
+      @sqlite.delete(:users, @firstUser["id"])
+    end
+    
+    it 'should reduce collection record count by 1' do
+      assert_equal @previousCount - 1, @sqlite.find(:users, limit: 1000).count
+    end
+
+    it 'should delete record with given id' do
+      newFirst = @sqlite.find(:users, 
+              limit: 1000, order_by: 'id', directon: 'asc', limit: 1).first
+      assert @firstUser["id"] != newFirst["id"]
+    end
+  end  
 end
