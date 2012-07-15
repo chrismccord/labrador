@@ -132,7 +132,9 @@ describe Labrador::Mysql do
     end
 
     it 'should delete record with given id' do
-      assert @firstUser["id"] != @mysql.find(:users, limit: 1000).first["id"]
+      newFirst = @mysql.find(:users, 
+              limit: 1000, order_by: 'id', directon: 'asc', limit: 1).first
+      assert @firstUser["id"] != newFirst["id"]
     end
   end  
 end
