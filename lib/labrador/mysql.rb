@@ -46,6 +46,32 @@ module Labrador
       ").as_json
     end
 
+    def create(collection_name, data = {})
+      primary_key_name = primary_key_for(collection_name)
+      values = data.collect{|key, val| "'#{session.escape(val.to_s)}'" }.join(", ")
+      fields = data.collect{|key, val| key.to_s }.join(", ")
+      session.query("
+        INSERT INTO #{collection_name}
+        (#{ fields })
+        VALUES (#{ values })
+      ")
+    end
+
+    def update(collection_name, id, data = {})
+      primary_key_name = primary_key_for(collection_name)
+      key_values = data.collect{|key, val| "#{key}='#{session.escape(val.to_s)}'" }.join(",")
+      session.query("
+        UPDATE #{collection_name}
+        SET #{ key_values }
+        WHERE #{primary_key_name}=#{id}
+      ")
+    end
+
+    def delete(collection_name, id)
+      primary_key_name = primary_key_for(collection_name)
+      session.query("DELETE FROM #{collection_name} WHERE #{primary_key_name}=#{id}")
+    end
+
     def primary_key_for(collection_name)
       result = session.query("SHOW INDEX FROM #{collection_name}").first
       result && result["Column_name"]
