@@ -66,6 +66,16 @@ en:
       invalid_adapter: "The %{adapter} database configuration for %{app} could not be loaded."
 
   modals:
+    cancel: "Cancel"
+    ok: "Ok"
+    error:
+      title: "An error has occurred"
+    database:
+      confirm_delete:
+        title: "Deletion Confirmation"
+        body: "Delete item (%{primary_key} = %{id})? This operation cannot be undone."
+        ok: "Delete"
+        cancel: "Cancel"
     settings:
       title: "Settings"
       close: "Cancel"
