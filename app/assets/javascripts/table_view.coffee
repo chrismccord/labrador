@@ -28,11 +28,13 @@ class @TableView extends Backbone.View
     $tbody = @$el.find("tbody")
     $tableContainer = @$el.parent(".fixed-table-container")
     $row = $tableContainer.find("thead tr")
-    $tableContainer[0].removeEventListener('scroll', this)
-    $tableContainer[0].addEventListener 'scroll', (=>
+
+    onScroll = =>
       $row.css(top: $tableContainer.scrollTop())
       @trigger('scroll')
-    ), capture = true
+
+    $tableContainer[0].removeEventListener('scroll', onScroll, true)
+    $tableContainer[0].addEventListener 'scroll', onScroll, capture = true
 
     $tbody.off('click', 'tr').on 'click', 'tr', (e) =>
       e.preventDefault()
