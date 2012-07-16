@@ -77,10 +77,8 @@ class @TableView extends Backbone.View
 
     onDoubleClick = (e) =>
       @$el[0].removeEventListener('dblclick', onDoubleClick, true)
-      console.log 'dblclick'
       $tbody.off('dblclick', 'td').on 'dblclick', 'td', (e) => 
         e.preventDefault()
-        console.log 'td dblclick'
         app.hideTooltips()
         $pop = $(e.currentTarget)
         field = $pop.attr("data-field")
