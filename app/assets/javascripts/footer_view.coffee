@@ -7,6 +7,8 @@ class @FooterView extends Backbone.View
     'click [data-action=prev-page]'     : 'prevPage'
     'click [data-action=refresh]'       : 'refresh'
     'click [data-action=config]'        : 'configure'
+    'click [data-action=delete-item]'   : 'deleteItem'
+    'click [data-action=create-item]'   : 'createItem'
 
 
   initialize: ->
@@ -53,19 +55,19 @@ class @FooterView extends Backbone.View
 
 
   prevPage: (e) ->
-    e.preventDefault()
+    e?.preventDefault()
     return if @$prevPage.attr("data-disabled") is "true"
     @model.filterPrevious(skip: @skippedCount() - app.get('limit'))
 
 
   nextPage: (e) ->
-    e.preventDefault()
+    e?.preventDefault()
     return if @$nextPage.attr("data-disabled") is "true"
     @model.filterPrevious(skip: @skippedCount() + app.get('limit'))
 
 
   refresh: (e) ->
-    e.preventDefault()
+    e?.preventDefault()
     @model.filterPrevious()
     
 
@@ -80,7 +82,7 @@ class @FooterView extends Backbone.View
 
 
   configure: (e) ->
-    e.preventDefault()
+    e?.preventDefault()
     $modal = @$('.modal')
     $apply = $modal.find("[data-action=apply]")
     $limit = $modal.find("[data-name=limit]")
@@ -88,12 +90,38 @@ class @FooterView extends Backbone.View
     $limit.val(app.get('limit'))
     $modal.modal()
     $modal.find('form').off('submit').on 'submit', (e) => 
-      e.preventDefault()
+      e?.preventDefault()
       $apply.trigger('click')
 
     $apply.off('click').on 'click', =>
       app.set(limit: Number($limit.val()))
       $modal.modal('hide')
+
+
+  createItem: (e) ->
+    e?.preventDefault()
+
+
+  deleteItem: (e) ->
+    e?.preventDefault()
+    selectedItem = app.tableView.selectedItem()
+    return unless selectedItem?
+    primaryKey = selectedItem.get('primaryKeyName')
+    id = selectedItem.get('primaryKeyValue')
+    Modal.prompt
+      title: I18n.t("modals.database.confirm_delete.title")
+      body: I18n.t("modals.database.confirm_delete.body", primary_key: primaryKey, id: id)
+      ok:
+        label: I18n.t("modals.database.confirm_delete.ok")
+        onclick: => 
+          Modal.close()
+          @model.delete @model.collection(), id, => @refresh()
+      cancel:
+        label: I18n.t("modals.database.confirm_delete.cancel")
+
+
+
+  
 
 
 

@@ -79,20 +79,97 @@ class @TableView extends Backbone.View
       @$el.find("tbody").off('dblclick', 'td').on 'dblclick', 'td', (e) => 
         app.hideTooltips()
         $pop = $(e.currentTarget)
+        field = $pop.attr("data-field")
+        item = new Item(primaryKeyName: @model.primaryKey(), data: @serializeRow($pop.parent("tr")))
+        $pop.attr("data-content", @editTemplate(item, field))
         app.popover($pop, placement: 'bottom', trigger: 'manual', title: $pop.attr('data-field'))
         app.popover($pop, 'show')
-        $(e.currentTarget).find("[rel=popover]").on('mouseout').popover('hide')   
+        $(e.currentTarget).find("[rel=popover]").on('mouseout').popover('hide')
+        @bindEditItem($pop, item, field)
     ), capture = true
+
+
+  # Bind edit tooltip close/save events
+  #
+  # params - The hash of params
+  #   $td - The jQuery DOM object to update when saving
+  #   item - The Item model
+  #   field - The field name of the cell being bound
+  #
+  bindEditItem: ($td, item, field) ->
+    $pop = $("body > .popover:last")
+    $input = $pop.find("input, textarea")
+    $input.focus()
+    $pop.find("[data-action=close]").on 'click', (e) => 
+      e.preventDefault()
+      app.hideTooltips()
+    onSave = =>
+      app.hideTooltips()
+      data = {}
+      value = $input.val()
+      data[field] = value
+      @model.update @model.collection(), item.get('primaryKeyValue'), data, (error) =>         
+        @updateRowCell(item.get('primaryKeyValue'), field, value) unless error
+
+    $pop.find("[data-action=save]").on 'click', (e) => 
+      e.preventDefault()
+      onSave()
+    $input.on 'keypress', (e) =>
+      if e.keyCode is 13
+        e.preventDefault()
+        onSave()
+
+
+  # Update DOM of table cell with field name at given row id
+  #
+  # rowId - The primary key value of the row
+  # field - The String field name of the row's cell to update
+  # value - The updated value of the field
+  #
+  updateRowCell: (rowId, field, value) ->
+    $td = @$el.find("tbody tr[data-id='#{rowId}'] td[data-field='#{field}']")
+    $newTd = $("<td/>")    
+    type = $td.attr('data-type')
+    expanded = $td.attr('data-expanded')
+    $td.attr('data-value', _.escape(value))
+    $td.html( $(@cellTemplate(type, field, expanded, value)).html() )
+
+
+  # Returns the selected Item model from table
+  selectedItem: ->
+    $item = $("tr[data-active=true]")
+    return if $item.length is 0
+    $item = $($item[0])
+    item = new Item(primaryKeyName: @model.primaryKey(), data: @serializeRow($item))
+
+    item
+    
+
+  # Serialize table dom object into hash
+  serializeRow: ($row) ->
+    $row = $($row)
+    attributes = {}
+    for td in $row.find("td")
+      $td = $(td)
+      attributes[$td.attr('data-field')] = $td.attr('data-value')
+
+    attributes
 
 
   anyFieldChanged: (newFields) ->
     (newFields.some (field) => @$el.find("th[data-field='#{field}']").length is 0)
 
   
+  # Returns array of all expanded fields
   expandedFields: ->
     ($(th).attr('data-field') for th in @$el.find("th[data-expanded=true]"))
     
   
+  # Render table header template
+  # 
+  # fields - The array of String field names
+  # 
+  # Returns String of rendered table head HTML
   headerTemplate: (fields) ->
     thead = ""
     for field in fields        
@@ -113,12 +190,69 @@ class @TableView extends Backbone.View
     thead
 
 
+  # Render template for edit tooltip
+  #
+  # data - The hash of data
+  #   item - The Item to edit
+  #   field - The field of the item being edited
+  #
+  # Returns the rendered HTML template for the tooltip 
+  editTemplate: (item, field) ->
+    id = item.get('primaryKeyValue')
+    value = item.val(field)
+    if value.search("\n") >= 0 or value.search(/\W/) >= 0
+      """
+        <div class="edit">
+          <textarea data-id="#{id}" data-field="#{field}">#{value}</textarea>
+          <div class="pull-right">
+            <a class="btn" href="#" data-action="close">close</a>
+            <a class="btn btn-primary" href="#" data-action="save">save</a>
+          </div>
+        </div>
+      """
+    else
+      """
+        <div class="edit">
+          <input type="text" data-field="#{field}" value="#{_.escape(value)}" />
+          <div class="pull-right">
+            <a class="btn" href="#" data-action="close">close</a>
+            <a class="btn btn-primary" href="#" data-action="save">save</a>
+          </div>
+        </div>
+      """
+
+ 
+  # Renders table cell to HTML
+  # 
+  # type - The String type of cell, one of "string", "number", "json"
+  # field - The String name of the field being rendered
+  # expanded - The boolean expanded option to expand cell
+  # val - The value of the field
+  #
+  # Returns the rendered HTML
+  cellTemplate: (type, field, expanded, val) ->
+    """
+      <td data-type='#{type}' data-field='#{field}' data-expanded='#{expanded}' rel='popover' data-value='#{_.escape(val)}'>
+        <div class='value'>#{_.escape(@truncate(val, @maxChars))}</div>
+        <div class='truncated'>#{_.escape(@truncate(val, 16))}</div>
+      </td>
+    """
+
+  # Renders table body
+  #
+  # fields - The array of String field names
+  # items - The array of items with fields as key names and values of each field
+  # callback - The callback when finished processing all items. 
+  #            Callback receives rendered output
+  #
   bodyTemplate: (fields, items, callback) ->
     rows = []
     count = 0
     expandedFields = @expandedFields()
+    primaryKeyField = (field for field in fields when field is @model.primaryKey())[0]
     processRows = (item, done) =>
-      rows.push "<tr class='#{if count % 2 is 0 then '' else 'odd'}'>"
+      id = item[primaryKeyField]
+      rows.push "<tr data-id='#{id}' class='#{if count % 2 is 0 then '' else 'odd'}'>"
       for field in fields
         val = item[field] ? ""
         if $.isNumeric(val)
@@ -129,12 +263,7 @@ class @TableView extends Backbone.View
         else
           type = 'string'
         expanded = if expandedFields.indexOf(field) >= 0 then 'true' else 'false'
-        rows.push """
-          <td data-type='#{type}' data-field='#{field}' data-expanded='#{expanded}' rel='popover' data-content='#{_.escape(val)}'>
-            <div class='value'>#{_.escape(@truncate(val, @maxChars))}</div>
-            <div class='truncated'>#{_.escape(@truncate(val, 16))}</div>
-          </td>
-        """
+        rows.push @cellTemplate(type, field, expanded, val)
       rows .push "</tr>"
       count += 1
       if Math.round((count / items.length) * 100) % 5 is 0
@@ -150,6 +279,11 @@ class @TableView extends Backbone.View
     @$el.find("tbody").empty()
 
 
+  # Renders table
+  #
+  # fields - The array of String field names
+  # items - The hash of key values with field names as keys
+  #
   render: (fields, items) ->
     app.hideTooltips()
     @emptyBody()
@@ -164,6 +298,7 @@ class @TableView extends Backbone.View
       @bind()
       @hideLoading()
       @trigger('render')
+
 
   showLoading: (percentage) ->
     app.progressView.show(percentage)

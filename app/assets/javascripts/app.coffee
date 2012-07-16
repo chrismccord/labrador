@@ -57,7 +57,12 @@ class @App extends Backbone.Model
 
 
   showError: (error) ->
-    console.log error
+    Modal.alert
+      title: I18n.t("modals.error.title")
+      body: error
+      ok:
+        label: I18n.t("modals.ok")
+        onclick: => Modal.close()
 
 
 @app = new App()

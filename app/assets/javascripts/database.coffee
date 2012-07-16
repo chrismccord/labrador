@@ -18,6 +18,14 @@ class @Database extends Backbone.Model
       success: (data) -> callback?(null, data)
       error: (err) -> callback?(err)
 
+  
+  # Returns String collection name from last find
+  collection: -> @get('data')?.collection
+
+
+  # Returns name of field that is primary key from last find
+  primaryKey: -> @get('data')?.primary_key
+
 
   find: (collection, options, callback) ->
     if typeof options is 'function'
@@ -32,8 +40,7 @@ class @Database extends Backbone.Model
       url: "/data/#{@get('adapter')}?collection=#{collection}"
       type: "GET"
       data: options
-      success: (data) -> 
-        console.log data        
+      success: (data) ->         
         data.timestamp = (new Date()).valueOf() # Trigger 'change' if even data is the same
         callback?(null, data)
       error: (error) =>
