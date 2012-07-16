@@ -8,6 +8,7 @@ class DataController < ApplicationController
     items = current_adapter.database.find(params[:collection], parse_options)
     render json: {
       primary_key: current_adapter.database.primary_key_for(params[:collection]),
+      collection: params[:collection],
       fields: current_adapter.database.fields_for(items),
       items: items
     }
