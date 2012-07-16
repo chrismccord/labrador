@@ -1,6 +1,7 @@
 class @TableView extends Backbone.View
   
   maxChars: 120
+  $selectedRow: null
 
   initialize: (attributes) ->
     @model.on 'change:data', => @render(@model.get('data').fields, @model.get('data').items)
@@ -24,6 +25,7 @@ class @TableView extends Backbone.View
 
   bind: ->
     @$el.unbind()
+    $tbody = @$el.find("tbody")
     $tableContainer = @$el.parent(".fixed-table-container")
     $row = $tableContainer.find("thead tr")
     $tableContainer[0].removeEventListener('scroll', this)
@@ -32,11 +34,12 @@ class @TableView extends Backbone.View
       @trigger('scroll')
     ), capture = true
 
-    @$el.find("tbody").off('click', 'tr').on 'click', 'tr', (e) =>
+    $tbody.off('click', 'tr').on 'click', 'tr', (e) =>
       e.preventDefault()
       $target = $(e.currentTarget)
+      @$selectedRow?.removeAttr("data-active")
       $target.attr("data-active", true)
-      @$el.find("tr[data-active=true]").not($target).removeAttr("data-active")
+      @$selectedRow = $target
      
 
     @$el.find("thead").off('click', 'th').on 'click', 'th', (e) =>
@@ -71,12 +74,13 @@ class @TableView extends Backbone.View
       @$el.find("[data-field='#{field}']").removeAttr("data-expanded")
       @setTableHeaderWidth()
 
-    @doubleClicked = false
-    @$el[0].removeEventListener('dblclick', this)
-    @$el[0].addEventListener 'dblclick', ((e) =>
-      return if @doubleClicked
-      @doubleClicked = true
-      @$el.find("tbody").off('dblclick', 'td').on 'dblclick', 'td', (e) => 
+
+    onDoubleClick = (e) =>
+      @$el[0].removeEventListener('dblclick', onDoubleClick, true)
+      console.log 'dblclick'
+      $tbody.off('dblclick', 'td').on 'dblclick', 'td', (e) => 
+        e.preventDefault()
+        console.log 'td dblclick'
         app.hideTooltips()
         $pop = $(e.currentTarget)
         field = $pop.attr("data-field")
@@ -84,9 +88,10 @@ class @TableView extends Backbone.View
         $pop.attr("data-content", @editTemplate(item, field))
         app.popover($pop, placement: 'bottom', trigger: 'manual', title: $pop.attr('data-field'))
         app.popover($pop, 'show')
-        $(e.currentTarget).find("[rel=popover]").on('mouseout').popover('hide')
         @bindEditItem($pop, item, field)
-    ), capture = true
+
+    @$el[0].removeEventListener('dblclick', onDoubleClick, true)
+    @$el[0].addEventListener 'dblclick', onDoubleClick, capture = true
 
 
   # Bind edit tooltip close/save events
