@@ -48,6 +48,22 @@ class @Database extends Backbone.Model
         callback?(error) 
 
 
+  schema: (collection, callback) ->
+    options = {}
+    @trigger('before:send', collection, options)
+    options.path = @get('path')
+    $.ajax
+      url: "/data/#{@get('adapter')}/schema?collection=#{collection}"
+      type: "GET"
+      data: options
+      success: (data) ->         
+        data.timestamp = (new Date()).valueOf() # Trigger 'change' if even data is the same
+        callback?(null, data)
+      error: (error) =>
+        @trigger('error', error)
+        callback?(error)
+
+
   filterPrevious: (newOptions = {}) ->
     return unless @get('lastFind')?
     {collection, options, callback} = @get('lastFind')
