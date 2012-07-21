@@ -72,6 +72,10 @@ module Labrador
       session.query("DELETE FROM #{collection_name} WHERE #{primary_key_name}=#{id}")
     end
 
+    def schema(collection_name)
+      session.query("DESCRIBE #{collection_name}").as_json
+    end
+
     def primary_key_for(collection_name)
       result = session.query("SHOW INDEX FROM #{collection_name}").first
       result && result["Column_name"]

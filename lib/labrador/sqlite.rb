@@ -68,6 +68,10 @@ module Labrador
       query.execute(id)
     end
 
+    def schema(collection_name)
+      session.execute("PRAGMA table_info(#{collection_name})").as_json
+    end
+
     def primary_key_for(collection_name)
       result = session.table_info(collection_name).select{|field| field["pk"] == 1 }.first
       result && result["name"]

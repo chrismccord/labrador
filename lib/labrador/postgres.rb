@@ -72,6 +72,34 @@ module Labrador
       session.exec("DELETE FROM #{collection_name} WHERE #{primary_key_name}=#{id}")
     end
 
+    def schema(collection_name)
+      session.exec(%Q{
+        SELECT
+          a.attname AS Field,
+          t.typname || '(' || a.atttypmod || ')' AS Type,
+          CASE WHEN a.attnotnull = 't' THEN 'YES' ELSE 'NO' END AS Null,
+          CASE WHEN r.contype = 'p' THEN 'PRI' ELSE '' END AS Key,
+          (SELECT substring(pg_catalog.pg_get_expr(d.adbin, d.adrelid), \'(.*)\')
+            FROM
+              pg_catalog.pg_attrdef d
+            WHERE
+              d.adrelid = a.attrelid
+              AND d.adnum = a.attnum
+              AND a.atthasdef) AS Default,
+          '' as Extras
+        FROM
+          pg_class c 
+          JOIN pg_attribute a ON a.attrelid = c.oid
+          JOIN pg_type t ON a.atttypid = t.oid
+          LEFT JOIN pg_catalog.pg_constraint r ON c.oid = r.conrelid 
+          AND r.conname = a.attname
+        WHERE
+          c.relname = '#{collection_name}'
+          AND a.attnum > 0        
+        ORDER BY a.attnum
+      }).as_json
+    end
+
     def primary_key_for(collection_name)
       result = session.exec("
         SELECT               
