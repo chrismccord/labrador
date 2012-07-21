@@ -10,6 +10,7 @@ Labrador::Application.routes.draw do
       resources adapter, controller: 'data', adapter: adapter do
         collection do
           get :collections, action: 'collections'
+          get :schema, action: 'schema'
         end
       end
     end 

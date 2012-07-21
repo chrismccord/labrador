@@ -14,6 +14,15 @@ class DataController < ApplicationController
     }
   end
 
+  def schema
+    items = current_adapter.database.schema(params[:collection])
+    render json: {
+      collection: params[:collection],
+      fields: current_adapter.database.fields_for(items),
+      items: items
+    }
+  end
+
   def create
     current_adapter.database.create(params[:collection], params[:data])
     render json: { success: true }
