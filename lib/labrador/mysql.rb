@@ -1,3 +1,5 @@
+require 'mysql'
+
 module Labrador
   class Mysql
     extend Configuration
@@ -16,18 +18,14 @@ module Labrador
       password  = params[:password]
       @socket   = params[:socket]
 
-      @session  = Mysql2::Client.new(
-        host: @host, 
-        port: @port, 
-        database: @database,  
-        username: @user,
-        password: password,
-        socket: @socket
-      )
+      @session  = ::Mysql.connect(@host, @user, password, @database, @port, @socket)
     end
 
     def collections
-      session.query("SHOW TABLES").collect{|row| row.reduce.last }.sort
+      names = []
+      session.query("SHOW TABLES").each{|row| names << row.first }
+
+      names
     end
 
     def find(collection_name, options = {})
@@ -37,18 +35,21 @@ module Labrador
       direction    = options[:direction] || 'ASC'
       where_clause = options[:conditions]
 
+      results = []
       session.query("
         SELECT * FROM #{collection_name}
         #{"WHERE #{where_clause}" if where_clause}
         #{"ORDER BY #{order_by} #{direction}" if order_by}
         LIMIT #{limit}
         OFFSET #{skip}
-      ").as_json
+      ").each_hash{|row| results << row }
+
+      results
     end
 
     def create(collection_name, data = {})
       primary_key_name = primary_key_for(collection_name)
-      values = data.collect{|key, val| "'#{session.escape(val.to_s)}'" }.join(", ")
+      values = data.collect{|key, val| "'#{session.escape_string(val.to_s)}'" }.join(", ")
       fields = data.collect{|key, val| key.to_s }.join(", ")
       session.query("
         INSERT INTO #{collection_name}
@@ -59,17 +60,21 @@ module Labrador
 
     def update(collection_name, id, data = {})
       primary_key_name = primary_key_for(collection_name)
-      key_values = data.collect{|key, val| "#{key}='#{session.escape(val.to_s)}'" }.join(",")
-      session.query("
+      prepared_key_values = data.collect{|key, val| "#{key}=?" }.join(",")
+      values = data.values
+      values << id
+      query = session.prepare("
         UPDATE #{collection_name}
-        SET #{ key_values }
-        WHERE #{primary_key_name}=#{id}
+        SET #{ prepared_key_values }
+        WHERE #{primary_key_name}=?
       ")
+      query.execute(*values)
     end
 
     def delete(collection_name, id)
       primary_key_name = primary_key_for(collection_name)
-      session.query("DELETE FROM #{collection_name} WHERE #{primary_key_name}=#{id}")
+      query = session.prepare("DELETE FROM #{collection_name} WHERE #{primary_key_name}=?")
+      query.execute(id)
     end
 
     def schema(collection_name)
@@ -77,7 +82,7 @@ module Labrador
     end
 
     def primary_key_for(collection_name)
-      result = session.query("SHOW INDEX FROM #{collection_name}").first
+      result = session.query("SHOW INDEX FROM #{collection_name}").fetch_hash
       result && result["Column_name"]
     end
 

@@ -1,3 +1,5 @@
+require 'postgres-pr/connection'
+
 module Labrador
   class Postgres
     extend Configuration
@@ -15,19 +17,31 @@ module Labrador
       @user     = params[:user]
       password  = params[:password]
      
-      @session = PG::Connection.open(
-        host: @host, 
-        port: @port, 
-        dbname: @database,  
-        user: @user,
-        password: password
+      @session = PostgresPR::Connection.new(
+        @database,
+        @user,
+        password,
+        "tcp://#{@host}:#{@port}"
       )
     end
 
+    # Parase postegres-pr Result into array of key value records. Force utf-8 encoding
+    def parse_results(results)
+      results.rows.collect do |row|
+        record = {}
+        row.each_with_index{|val, i| 
+          val = val.force_encoding('utf-8') if val
+          record[results.fields[i].name] = val
+        }
+        
+        record
+      end
+    end
+
     def collections
-      session.exec("
+      session.query("
         SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';
-      ").collect{|row| row["table_name"] }.sort
+      ").rows.flatten.sort
     end
 
     def find(collection_name, options = {})
@@ -37,20 +51,28 @@ module Labrador
       direction    = options[:direction] || 'ASC'
       where_clause = options[:conditions]
 
-      session.exec("
+      parse_results(session.query("
         SELECT * FROM #{collection_name}
         #{"WHERE #{where_clause}" if where_clause}
         #{"ORDER BY #{order_by} #{direction}" if order_by}
         LIMIT #{limit}
         OFFSET #{skip}
-      ").as_json
+      "))
+    end
+
+    # Escape string for SQL and force US-ASCII encoding as workaround
+    # For postgres-pr unicode limitations
+    # TODO: Handle propper encoding
+    #
+    def escape(str)
+      str.to_s.gsub(/\\/, '\&\&').gsub(/'/, "''").force_encoding('US-ASCII')
     end
 
     def create(collection_name, data = {})
       primary_key_name = primary_key_for(collection_name)
-      values = data.collect{|key, val| "'#{session.escape_string(val.to_s)}'" }.join(", ")
+      values = data.collect{|key, val| "'#{escape(val.to_s)}'" }.join(", ")
       fields = data.collect{|key, val| key.to_s }.join(", ")
-      session.exec("
+      session.query("
         INSERT INTO #{collection_name}
         (#{ fields })
         VALUES (#{ values })
@@ -59,8 +81,8 @@ module Labrador
 
     def update(collection_name, id, data = {})
       primary_key_name = primary_key_for(collection_name)
-      key_values = data.collect{|key, val| "#{key}='#{session.escape_string(val.to_s)}'" }.join(",")
-      session.exec("
+      key_values = data.collect{|key, val| %Q{#{key}='#{escape(val.to_s)}'} }.join(",")
+      session.query("
         UPDATE #{collection_name}
         SET #{ key_values }
         WHERE #{primary_key_name}=#{id}
@@ -69,11 +91,11 @@ module Labrador
 
     def delete(collection_name, id)
       primary_key_name = primary_key_for(collection_name)
-      session.exec("DELETE FROM #{collection_name} WHERE #{primary_key_name}=#{id}")
+      session.query("DELETE FROM #{collection_name} WHERE #{primary_key_name}=#{id}")
     end
 
     def schema(collection_name)
-      session.exec(%Q{
+      session.query(%Q{
         SELECT
           a.attname AS Field,
           t.typname || '(' || a.atttypmod || ')' AS Type,
@@ -101,7 +123,7 @@ module Labrador
     end
 
     def primary_key_for(collection_name)
-      result = session.exec("
+      result = session.query("
         SELECT               
           pg_attribute.attname, 
           format_type(pg_attribute.atttypid, pg_attribute.atttypmod) 
@@ -112,8 +134,8 @@ module Labrador
           pg_attribute.attrelid = pg_class.oid AND 
           pg_attribute.attnum = any(pg_index.indkey)
           AND indisprimary
-      ").first
-      result && result["attname"]
+      ").rows.first
+      result && result.first
     end
 
     def id

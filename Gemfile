@@ -5,13 +5,13 @@ gem 'rails', '3.2.6'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
-gem 'sqlite3'
+gem 'amalgalite'
+gem 'postgres-pr'
+gem 'ruby-mysql', '~> 2.9.10'
 gem 'mongo', '1.6.4'
 gem 'bson'
 gem 'bson_ext'
-gem 'mysql2'
 gem 'json'
-gem 'pg'
 gem 'i18n-js'
 gem 'gon'
 

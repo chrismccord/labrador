@@ -10,8 +10,7 @@ module Labrador
 
     def initialize(params = {})      
       @database = params[:database]
-      @session = SQLite3::Database.new(@database)
-      @session.results_as_hash = true
+      @session = Amalgalite::Database.new(@database)
     end
 
     def collections
@@ -33,7 +32,7 @@ module Labrador
         #{"ORDER BY #{order_by} #{direction}" if order_by}
         LIMIT #{limit}
         OFFSET #{skip}
-      ").map{|record| record.delete_if{|key, val| key.is_a?(Integer) } }
+      ").map(&:to_hash)
     end
 
     def create(collection_name, data = {})
@@ -73,8 +72,10 @@ module Labrador
     end
 
     def primary_key_for(collection_name)
-      result = session.table_info(collection_name).select{|field| field["pk"] == 1 }.first
-      result && result["name"]
+      result = session.schema.tables[collection_name.to_s].columns.select{|name, col| 
+        col.primary_key? 
+      }.first
+      result && result.first
     end
 
     def id
