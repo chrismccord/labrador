@@ -86,8 +86,8 @@ class @TableView extends Backbone.View
         field = $pop.attr("data-field")
         item = new Item(primaryKeyName: @model.primaryKey(), data: @serializeRow($pop.parent("tr")))
         $pop.attr("data-content", @editTemplate(item, field))
-        app.popover($pop, placement: 'bottom', trigger: 'manual', title: $pop.attr('data-field'))
-        app.popover($pop, 'show')
+        Popover.pop($pop, placement: 'bottom', trigger: 'manual', title: $pop.attr('data-field'))
+        Popover.pop($pop, 'show')
         @bindEditItem($pop, item, field)
 
     @$el[0].removeEventListener('dblclick', onDoubleClick, true)

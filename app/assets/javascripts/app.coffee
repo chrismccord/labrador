@@ -3,7 +3,6 @@ class @App extends Backbone.Model
   defaults:
     limit: 500
 
-  tooltipsVisible: false
 
   initialize: ->
     $ =>
@@ -11,13 +10,14 @@ class @App extends Backbone.Model
       @tableView = new TableView(model: @database, el: ".fixed-table-container table:first")
       @progressView = new ProgressView()  
       @footerView = new FooterView(model: @database)
+      Popover.init()
       @resizeBody()
       @bind()
 
 
   bind: ->
-    @tableView.off('scroll').on 'scroll', =>
-      @hideTooltips() if @tooltipsVisible
+    @tableView.off('scroll').on 'scroll', => 
+      Popover.hide() if Popover.isVisible()
 
     $(window).on 'resize', => @resizeBody()
 
@@ -44,16 +44,10 @@ class @App extends Backbone.Model
   resizeBody: ->
     $("[data-view=main]").css(height: $(window).height() - 104)
 
-
-  popover: ($el, options) ->
-    @tooltipsVisible = true if options is 'show'
-    options.animation ?= false
-    $el.popover(options)
-
+  
 
   hideTooltips: ->
-    @tooltipsVisible = false    
-    $('.popover').remove()
+    app.trigger('hide:tooltips')
 
 
   showError: (error) ->
