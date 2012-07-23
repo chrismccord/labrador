@@ -60,7 +60,8 @@ module Labrador
         host: conf["host"],
         user: conf["username"],
         database: conf["database"],
-        password: conf["password"]
+        password: conf["password"],
+        socket: conf["socket"]
       }
       begin
         @database = case conf["adapter"]
