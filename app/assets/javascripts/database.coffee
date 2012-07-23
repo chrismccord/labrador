@@ -75,7 +75,7 @@ class @Database extends Backbone.Model
     $.ajax
       url: "/data/#{@get('adapter')}?collection=#{collection}"
       type: "POST"
-      data: {data}
+      data: {data, path: @get('path')}
       success: (response) =>
         @trigger('error', error: response.error) if response.error
         callback?(response.error)
@@ -88,7 +88,7 @@ class @Database extends Backbone.Model
     $.ajax
       url: "/data/#{@get('adapter')}/#{id}?collection=#{collection}"
       type: "PUT"
-      data: {data}
+      data: {data, path: @get('path')}
       success: (response) =>
         @trigger('error', error: response.error) if response.error
         callback?(response.error)
@@ -101,6 +101,7 @@ class @Database extends Backbone.Model
     $.ajax
       url: "/data/#{@get('adapter')}/#{id}?collection=#{collection}"
       type: "DELETE"
+      data: {path: @get('path')}
       success: (response) =>
         @trigger('error', error: response.error) if response.error
         callback?(response.error)
