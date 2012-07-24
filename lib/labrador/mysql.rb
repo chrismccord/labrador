@@ -86,6 +86,14 @@ module Labrador
       result && result["Column_name"]
     end
 
+    def connected?
+      session.ping rescue false
+    end
+
+    def close
+      session.close
+    end
+
     def id
       "mysql"
     end

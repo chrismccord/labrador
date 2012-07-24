@@ -4,7 +4,7 @@ module Labrador
     include Store
     include ViewHelper
     
-    attr_accessor :host, :port, :user, :database, :session
+    attr_accessor :host, :port, :user, :database, :session, :connection
 
     DEFAULT_PORT = 27017
 
@@ -15,7 +15,8 @@ module Labrador
       @user     = params[:user]
       password  = params[:password]
       
-      @session = Mongo::Connection.new(@host, @port).db(@database)
+      @connection = Mongo::Connection.new(@host, @port)
+      @session = connection.db(@database)
       @session.authenticate(@user, password) if @user && password
       collections
     end
@@ -52,6 +53,14 @@ module Labrador
 
     def primary_key_for(collection_name)
       "_id"
+    end
+
+    def connected?
+      connection.connected?
+    end
+
+    def close
+      connection.close
     end
 
     def id

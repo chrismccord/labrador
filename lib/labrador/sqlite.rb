@@ -78,6 +78,14 @@ module Labrador
       result && result.first
     end
 
+    def connected?
+      session.open?
+    end
+
+    def close
+      session.close
+    end
+
     def id
       "sqlite"
     end

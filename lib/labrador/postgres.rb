@@ -138,6 +138,14 @@ module Labrador
       result && result.first
     end
 
+    def connected?
+      !session.instance_variable_get("@conn").nil?
+    end
+
+    def close
+      session.close
+    end
+
     def id
       "postgresql"
     end
