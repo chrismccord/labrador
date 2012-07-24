@@ -23,15 +23,15 @@ describe Labrador::Adapter do
     end
   end
 
-  describe '#load_configuration' do
-    it 'should load configuration from configuration path' do
+  describe '#configuration' do
+    it 'should lazy load configuration from configuration path' do
       assert @adapter.configuration
     end
   end
 
-  describe '#is_valid?' do
+  describe '#valid?' do
     it 'should be valid' do
-      assert @adapter.is_valid?
+      assert @adapter.valid?
     end
   end
 

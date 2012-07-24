@@ -136,5 +136,18 @@ describe Labrador::Mysql do
               limit: 1000, order_by: 'id', directon: 'asc', limit: 1).first
       assert @firstUser["id"] != newFirst["id"]
     end
-  end  
+  end
+
+  describe '#connected?' do
+    it 'should be connected' do
+      assert @mysql.connected?
+    end
+  end
+
+  describe '#close' do
+    it 'should close connection' do
+      @mysql.close
+      assert !@mysql.connected?
+    end
+  end    
 end

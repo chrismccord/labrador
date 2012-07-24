@@ -125,4 +125,17 @@ describe Labrador::MongoDB do
       assert @firstUser["_id"] != newFirst["_id"]
     end
   end
+
+  describe '#connected?' do
+    it 'should be connected' do
+      assert @mongo.connected?
+    end
+  end
+
+  describe '#close' do
+    it 'should close connection' do
+      @mongo.close
+      assert !@mongo.connected?
+    end
+  end
 end

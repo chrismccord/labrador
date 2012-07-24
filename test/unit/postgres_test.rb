@@ -136,5 +136,18 @@ describe Labrador::Postgres do
               limit: 1000, order_by: 'id', directon: 'asc', limit: 1).first
       assert @firstUser["id"] != newFirst["id"]
     end
-  end  
+  end
+
+  describe '#connected?' do
+    it 'should be connected' do
+      assert @postgres.connected?
+    end
+  end
+
+  describe '#close' do
+    it 'should close connection' do
+      @postgres.close
+      assert !@postgres.connected?
+    end
+  end    
 end
