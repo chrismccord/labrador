@@ -40,7 +40,7 @@ module Labrador
         path = File.expand_path("#{@path}/#{file}")
         if File.exists?(path)
           adapter = Adapter.new(path) 
-          @adapters << adapter if adapter.is_valid?
+          @adapters << adapter if adapter.valid?
         end
       end
       

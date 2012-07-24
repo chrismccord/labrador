@@ -2,7 +2,7 @@ class DataController < ApplicationController
 
   before_filter :find_applications  
   before_filter :find_adapters
-  around_filter :catch_crud_errors, only: [:create, :update, :destroy]
+  around_filter :catch_errors, only: [:index, :create, :update, :destroy]
 
   def index    
     items = current_adapter.database.find(params[:collection], parse_options)
@@ -44,10 +44,11 @@ class DataController < ApplicationController
 
   private
 
-  def catch_crud_errors
+  def catch_errors
     begin
       yield
     rescue Exception => e
+      current_adapter.disconnect if current_adapter
       return render_json_error(e)
     end
   end
