@@ -26,6 +26,7 @@ class @TableView extends Backbone.View
   bind: ->
     @$el.unbind()
     $tbody = @$el.find("tbody")
+    $thead = @$el.find("thead")
     $tableContainer = @$el.parent(".fixed-table-container")
     $row = $tableContainer.find("thead tr")
 
@@ -44,7 +45,7 @@ class @TableView extends Backbone.View
       @$selectedRow = $target
      
 
-    @$el.find("thead").off('click', 'th').on 'click', 'th', (e) =>
+    $thead.off('click', 'th').on 'click', 'th', (e) =>
       e.preventDefault()
       $target = $(e.currentTarget)
       field = $target.attr("data-field")
