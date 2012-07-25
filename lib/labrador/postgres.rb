@@ -25,7 +25,7 @@ module Labrador
       )
     end
 
-    # Parase postegres-pr Result into array of key value records. Force utf-8 encoding
+    # Parse postegres-pr Result into array of key value records. Force utf-8 encoding
     def parse_results(results)
       results.rows.collect do |row|
         record = {}

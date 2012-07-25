@@ -7,6 +7,11 @@ module Labrador
       "config/mongoid.yml"
     ]
 
+    # Find and instantiate all applications from given directory path
+    #
+    # path - The String path to the directory containing the applications
+    # 
+    # Returns the Array of App instances found in path
     def self.find_all_from_path(path)
       path = File.expand_path(path)
       apps = []
@@ -20,14 +25,25 @@ module Labrador
       apps
     end
 
+    # Check if given directory contains a supported application
+    #
+    # directory - The String path to the application's directory
+    # 
+    # Returns true if application in directory contains any supported files
     def self.is_supported_app?(directory)
       directory = File.expand_path(directory)
       @@supported_files.select{|file| File.exists?("#{directory}/#{file}") }.any?
     end
 
+    # Initialize App instance
+    # 
+    # attributes
+    #   name - The required String name of the application
+    #   path - The required String path to the application
+    #
     def initialize(attributes = {})
-      @name = attributes[:name]
-      @path = attributes[:path]
+      @name = attributes[:name] || (raise ArgumentError.new('Missing attribute :name'))
+      @path = attributes[:path] || (raise ArgumentError.new('Missing attributes :path'))
       @adapter_errors = []
       @adapters = []
       @connected = false
@@ -35,6 +51,9 @@ module Labrador
       find_adapters
     end
 
+    # Find all adapters for application's supported configuration files
+    #
+    # Returns the array of valid adapters found
     def find_adapters
       @@supported_files.each do |file|
         path = File.expand_path("#{@path}/#{file}")
@@ -51,6 +70,7 @@ module Labrador
       @adapters.collect(&:name)
     end
 
+    # Establish connection to each of application's adapters
     def connect
       return if @connected
       @adapters.each{|adapter| adapter.connect }
