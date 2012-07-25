@@ -13,11 +13,23 @@ module Labrador
 
     attr_accessor :configuration_path, :configuration, :errors, :database
 
-    def initialize(configuration_path, options = {})
+
+    # initialize new Adapter from configuration path
+    #
+    # configuration_path - The string path to the adapter's configuration file
+    #
+    def initialize(configuration_path)
       @configuration_path = File.expand_path(configuration_path)
       @errors = []
     end
 
+    # Lazy load adapter's configuration from configuration_path
+    #
+    # Two configuration files are supported
+    #   - database.yml (active record, datamapper)
+    #   - mongoid.yml (mongoid)
+    #
+    # Returns the Hash configuration
     def configuration
       @configuration ||= case configuration_path.split("/").last
         when "database.yml" then database_yml_config
@@ -25,6 +37,7 @@ module Labrador
       end
     end
 
+    # Returns the hash of connection credentials extracted from configuration file
     def credentials
       return unless configuration
       {
@@ -36,6 +49,7 @@ module Labrador
       }
     end
 
+    # Attempt to load database.yml hash configuration
     def database_yml_config
       path = File.expand_path(configuration_path)      
       return unless File.exists?(path)       
@@ -44,6 +58,7 @@ module Labrador
       config["development"] rescue nil
     end
 
+    # Attempt to load mongoid.yml hash configuration
     def mongoid_yml_config
       path = File.expand_path(configuration_path)
       return unless File.exists?(path)
@@ -65,6 +80,12 @@ module Labrador
       database && database.connected?
     end
 
+    # Create database connection for adapter based on adapter name from configuration
+    # 
+    # - Connection errors are caught and appended to errors collection
+    # - The connection is 'persisted' in a class instance variable if successful
+    #   and returned for subsequent connection attempts
+    #
     def connect
       return unless configuration
       @database = @@connections[name][db_name]    
@@ -87,6 +108,7 @@ module Labrador
       @@connections[name][db_name] = @database
     end
 
+    # Remove persistent connection from class instance and close database connection
     def disconnect
       database.close if connected?
       @@connections[name][db_name] = nil
