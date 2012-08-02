@@ -5,7 +5,7 @@
         <b><%= current_app %></b> <%= adapter.database.collection_name(2) %>
       </li>
     </ul>
-    <ul id="collections" class="nav nav-list">
+    <ul class="nav nav-list" data-view="collections">
       <% adapter.database.collections.each do |collection| %>
         <li>
           <a href='#' data-adapter='<%= adapter.name %>' data-collection='<%= collection %>'><i class="icon-list"></i> <%= collection %></a>

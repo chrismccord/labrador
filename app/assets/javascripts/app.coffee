@@ -6,6 +6,8 @@ class @App extends Backbone.Model
 
   initialize: ->
     $ =>
+      @$main = $("[data-view=main]")
+      @$collections = $("ul[data-view=collections]")
       @database = new Database(path: serverExports.app.path)
       @tableView = new TableView(model: @database, el: ".fixed-table-container table:first")
       @progressView = new ProgressView()  
@@ -21,10 +23,10 @@ class @App extends Backbone.Model
 
     $(window).on 'resize', => @resizeBody()
 
-    $("#collections li a").on 'click', (e) =>
+    @$collections.on 'click', 'li a', (e) =>
       e.preventDefault()
       $target = $(e.target)
-      $("#collections li").removeClass('active')
+      @$collections.find("li").removeClass('active')
       $target.parent('li').addClass('active')
       collection = $target.attr('data-collection')
       adapter = $target.attr('data-adapter')
@@ -42,7 +44,7 @@ class @App extends Backbone.Model
 
   
   resizeBody: ->
-    $("[data-view=main]").css(height: $(window).height() - 104)
+    @$main.css(height: $(window).height() - 104)
 
   
 

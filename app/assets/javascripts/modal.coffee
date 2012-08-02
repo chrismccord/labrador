@@ -1,5 +1,7 @@
 @Modal = 
   
+  $el: null
+
   promptTemplate: (data = {}) ->
     data.title ?= ""
     data.body ?= ""
@@ -41,7 +43,7 @@
 
   # Close any modal and remove from DOM
   close: ->
-    $("#modal, .modal-backdrop").remove()
+    @$el?.remove()
 
 
   # Show modal prompt with title, message and ok/cancel buttons
@@ -61,7 +63,7 @@
     options.ok ?= { label: I18n.t("modals.ok") }
 
     @close()
-    $modal = $("<div/>").html(@promptTemplate(options)).modal()
+    @$el = $modal = $("<div/>").html(@promptTemplate(options)).modal()
     $('body').append($modal)
     $modal.find('[data-action=cancel]').on 'click', (e) =>
       options.cancel.onclick?()
@@ -83,7 +85,7 @@
     options.ok ?= { label: I18n.t("modals.ok") }
 
     @close()
-    $modal = $("<div/>").html(@alertTemplate(options)).modal()
+    @$el = $modal = $("<div/>").html(@alertTemplate(options)).modal()
     $('body').append($modal)
     $modal.find('[data-action=cancel]').on 'click', (e) =>
       options.cancel.onclick?()

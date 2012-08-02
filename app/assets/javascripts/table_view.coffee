@@ -4,6 +4,11 @@ class @TableView extends Backbone.View
   $selectedRow: null
 
   initialize: (attributes) ->
+    @$tbody = @$el.find("tbody")
+    @$thead = @$el.find("thead")
+    @$tableContainer = @$el.parent(".fixed-table-container")
+    @$theadRow = @$tableContainer.find("thead tr")
+
     @model.on 'change:data', => @render(@model.get('data').fields, @model.get('data').items)
     @model.on 'before:send', => 
       @emptyBody()
@@ -17,42 +22,67 @@ class @TableView extends Backbone.View
 
 
   setTableHeaderWidth: ->
-    $headers = ($(h) for h in @$el.find("thead tr th"))
-    for td, i in @$el.find("tbody tr:first td")
+    $headers = ($(h) for h in @$thead.find("tr th"))
+    for td, i in @$tbody.find("tr:first td")
       width = $(td).width() - 1
       $headers[i].css('min-width': width, 'max-width': width)
 
 
   bind: ->
     @$el.unbind()
-    $tbody = @$el.find("tbody")
-    $thead = @$el.find("thead")
-    $tableContainer = @$el.parent(".fixed-table-container")
-    $row = $tableContainer.find("thead tr")
+    @bindScroll()
+    @bindBody()
+    @bindHead()
 
+
+  bindScroll: ->
+    scrollTimer = null
+    lastScrollTop = 0
+    onScrollStop = => @$theadRow.animate(opacity: 1, 250) unless @$theadRow.is(":animated")
     onScroll = =>
-      $row.css(top: $tableContainer.scrollTop())
+      # clearTimeout(scrollTimer)
+      scrollTop = @$tableContainer.scrollTop()
+      @$theadRow.css(top: scrollTop)
+      # scrollTimer = setTimeout onScrollStop, 50
+      # @$theadRow.css(opacity: 0) if Math.abs(lastScrollTop - scrollTop) > 20 and not @isEmpty()
+      # lastScrollTop = scrollTop
       @trigger('scroll')
 
-    $tableContainer[0].removeEventListener('scroll', onScroll, true)
-    $tableContainer[0].addEventListener 'scroll', onScroll, capture = true
+    @$tableContainer[0].removeEventListener('scroll', onScroll, true)
+    @$tableContainer[0].addEventListener 'scroll', onScroll, capture = true
 
-    $tbody.off('click', 'tr').on 'click', 'tr', (e) =>
+
+  bindBody: ->
+    @$tbody.off('click', 'tr').on 'click', 'tr', (e) =>
       e.preventDefault()
+      e.stopPropagation()
       $target = $(e.currentTarget)
       @$selectedRow?.removeAttr("data-active")
       $target.attr("data-active", true)
       @$selectedRow = $target
-     
 
-    $thead.off('click', 'th').on 'click', 'th', (e) =>
+    @$tbody.off('dblclick', 'td').on 'dblclick', 'td', (e) => 
       e.preventDefault()
+      e.stopPropagation()
+      app.hideTooltips()
+      $pop = $(e.currentTarget)
+      field = $pop.attr("data-field")
+      item = new Item(primaryKeyName: @model.primaryKey(), data: @serializeRow($pop.parent("tr")))
+      $pop.attr("data-content", @editTemplate(item, field))
+      Popover.pop($pop, placement: 'bottom', trigger: 'manual', title: $pop.attr('data-field'))
+      Popover.pop($pop, 'show')
+      @bindEditItem($pop, item, field)
+
+
+
+  bindHead: ->
+    @$thead.off('click', 'th').on 'click', 'th', (e) =>
+      e.preventDefault()
+      e.stopPropagation()
       $target = $(e.currentTarget)
       field = $target.attr("data-field")
       direction = $target.attr('data-direction')
-      @$el
-        .removeAttr("data-direction")
-        .find("th [data-action=asc], [data-action=desc]").hide()
+      @$thead.find("th [data-action=asc], [data-action=desc]").hide()
       if direction is 'asc'
         $target.attr('data-direction', 'desc')
         $target.find("[data-action='desc']").show()
@@ -61,8 +91,9 @@ class @TableView extends Backbone.View
         $target.attr('data-direction', 'asc')
         $target.find("[data-action='asc']").show()
         @model.filterPrevious(order_by: field, direction: 'asc')
- 
-    @$el.find("thead th [data-action='expand']").off('click').on 'click', (e) =>
+    
+    @$thead.off('click', "th [data-action='expand']").on 'click', "th [data-action='expand']", (e) =>
+      e.preventDefault()
       e.stopPropagation()
       $parent = $(e.target).parents("th")
       field = $parent.attr("data-field")
@@ -70,29 +101,13 @@ class @TableView extends Backbone.View
       @setTableHeaderWidth()
 
 
-    @$el.find("thead th [data-action='contract']").off('click').on 'click', (e) =>
+    @$thead.off('click', "th [data-action='contract']").on 'click', "th [data-action='contract']", (e) =>
+      e.preventDefault()
       e.stopPropagation()
       $parent = $(e.target).parents("th")
       field = $parent.attr("data-field")
       @$el.find("[data-field='#{field}']").removeAttr("data-expanded")
       @setTableHeaderWidth()
-
-
-    onDoubleClick = (e) =>
-      @$el[0].removeEventListener('dblclick', onDoubleClick, true)
-      $tbody.off('dblclick', 'td').on 'dblclick', 'td', (e) => 
-        e.preventDefault()
-        app.hideTooltips()
-        $pop = $(e.currentTarget)
-        field = $pop.attr("data-field")
-        item = new Item(primaryKeyName: @model.primaryKey(), data: @serializeRow($pop.parent("tr")))
-        $pop.attr("data-content", @editTemplate(item, field))
-        Popover.pop($pop, placement: 'bottom', trigger: 'manual', title: $pop.attr('data-field'))
-        Popover.pop($pop, 'show')
-        @bindEditItem($pop, item, field)
-
-    @$el[0].removeEventListener('dblclick', onDoubleClick, true)
-    @$el[0].addEventListener 'dblclick', onDoubleClick, capture = true
 
 
   # Bind edit tooltip close/save events
@@ -126,6 +141,10 @@ class @TableView extends Backbone.View
         onSave()
 
 
+  isEmpty: ->
+    @$tbody.is(":empty")
+
+
   # Update DOM of table cell with field name at given row id
   #
   # rowId - The primary key value of the row
@@ -133,7 +152,7 @@ class @TableView extends Backbone.View
   # value - The updated value of the field
   #
   updateRowCell: (rowId, field, value) ->
-    $td = @$el.find("tbody tr[data-id='#{rowId}'] td[data-field='#{field}']")
+    $td = @$tbody.find("tr[data-id='#{rowId}'] td[data-field='#{field}']")
     $newTd = $("<td/>")    
     type = $td.attr('data-type')
     expanded = $td.attr('data-expanded')
@@ -163,12 +182,12 @@ class @TableView extends Backbone.View
 
 
   anyFieldChanged: (newFields) ->
-    (newFields.some (field) => @$el.find("th[data-field='#{field}']").length is 0)
+    (newFields.some (field) => @$thead.find("th[data-field='#{field}']").length is 0)
 
   
   # Returns array of all expanded fields
   expandedFields: ->
-    ($(th).attr('data-field') for th in @$el.find("th[data-expanded=true]"))
+    ($(th).attr('data-field') for th in @$thead.find("th[data-expanded=true]"))
     
   
   # Render table header template
@@ -238,7 +257,7 @@ class @TableView extends Backbone.View
   # Returns the rendered HTML
   cellTemplate: (type, field, expanded, val) ->
     """
-      <td data-type='#{type}' data-field='#{field}' data-expanded='#{expanded}' rel='popover' data-value='#{_.escape(val)}'>
+      <td data-type='#{type}' data-field='#{field}' data-expanded='#{expanded}' data-value='#{_.escape(val)}'>
         <div class='value'>#{_.escape(@truncate(val, @maxChars))}</div>
         <div class='truncated'>#{_.escape(@truncate(val, 16))}</div>
       </td>
@@ -282,7 +301,7 @@ class @TableView extends Backbone.View
     
 
   emptyBody: ->
-    @$el.find("tbody").empty()
+    @$tbody.empty()
 
 
   # Renders table
@@ -296,10 +315,10 @@ class @TableView extends Backbone.View
     return @zeroState() if fields.length is 0 or items.length is 0
 
     if @anyFieldChanged(fields)
-      @$el.find("thead tr").html(@headerTemplate(fields))
+      @$theadRow.html(@headerTemplate(fields))
 
     @bodyTemplate fields, items, (body) =>
-      @$el.find("tbody").append(body)
+      @$tbody.append(body)
       @setTableHeaderWidth()
       @bind()
       @hideLoading()
