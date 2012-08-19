@@ -68,7 +68,13 @@ module Labrador
     end
 
     def schema(collection_name)
-      session.execute("PRAGMA table_info(#{collection_name})").as_json
+      field_names = ["field", "type", "NOT NULL", "default", "primary key"]
+      session.execute("PRAGMA table_info(#{collection_name})").collect do |row|
+        record = {}
+        row[1..row.length].each_with_index{|val, i| record[field_names[i]] = val }
+
+        record
+      end
     end
 
     def primary_key_for(collection_name)

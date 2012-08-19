@@ -8,7 +8,11 @@ module Labrador
     # Returns the array of field (keys) name found from results
     def fields_for(results = [])
       if results.any?
-        results.first.keys
+        if results.first.kind_of?(Hash)
+          results.first.keys
+        elsif results.first.kind_of?(Array)
+          results.first.collect{|field| field && field.first.to_s }
+        end
       else
         []
       end

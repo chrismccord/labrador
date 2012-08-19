@@ -95,7 +95,7 @@ module Labrador
     end
 
     def schema(collection_name)
-      session.query(%Q{
+      parse_results(session.query(%Q{
         SELECT
           a.attname AS Field,
           t.typname || '(' || a.atttypmod || ')' AS Type,
@@ -119,7 +119,7 @@ module Labrador
           c.relname = '#{collection_name}'
           AND a.attnum > 0        
         ORDER BY a.attnum
-      }).as_json
+      }))
     end
 
     def primary_key_for(collection_name)

@@ -71,6 +71,10 @@ module Labrador
       I18n.t('adapters.mongodb.title')
     end
 
+    def schema
+      []
+    end
+
     def as_json(options = nil)
       {
         id: self.id,

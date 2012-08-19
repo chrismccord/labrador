@@ -28,6 +28,16 @@ module Labrador
       names
     end
 
+    # Parse msyql-ruby Mysql::Result into array of key value records. 
+    def parse_results(results)
+      results.collect do |row|
+        record = {}
+        row.each_with_index{|val, i| record[results.fields[i].name] = val }
+        
+        record
+      end
+    end
+
     def find(collection_name, options = {})
       order_by     = options[:order_by] || primary_key_for(collection_name)
       limit        = (options[:limit] || Mysql.default_limit).to_i
@@ -78,7 +88,7 @@ module Labrador
     end
 
     def schema(collection_name)
-      session.query("DESCRIBE #{collection_name}").as_json
+      parse_results(session.query("DESCRIBE #{collection_name}"))
     end
 
     def primary_key_for(collection_name)
