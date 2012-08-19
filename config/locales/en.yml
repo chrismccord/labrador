@@ -68,6 +68,8 @@ en:
   modals:
     cancel: "Cancel"
     ok: "Ok"
+    coming_soon: "Coming Soon"
+    not_supported: "This feature is not yet supported."
     error:
       title: "An error has occurred"
     database:

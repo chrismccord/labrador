@@ -33,6 +33,9 @@ class @FooterView extends Backbone.View
       @updatePagingState()
       @updateStatus(I18n.t("status.showing", count: count, results: @resultName(count)))
 
+    key 'left', (e) => @prevPage(e)
+    key 'right', (e) => @nextPage(e)
+
 
   cacheSelectors: ->
     @$nextPage = @$("[data-action=next-page]")
@@ -100,6 +103,9 @@ class @FooterView extends Backbone.View
 
   createItem: (e) ->
     e?.preventDefault()
+    Modal.alert
+      title: I18n.t('modals.coming_soon')
+      body: I18n.t('modals.not_supported')
 
 
   deleteItem: (e) ->

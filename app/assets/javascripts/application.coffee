@@ -6,6 +6,7 @@
 #= require 'bootstrap'
 #= require 'backbone'
 #= require 'async'
+#= require 'keymaster'
 #= require_tree .
 
 

@@ -44,7 +44,8 @@
   # Close any modal and remove from DOM
   close: ->
     @$el?.remove()
-
+    $("body").removeClass("modal-open")
+    $("body > .modal-backdrop").remove()
 
   # Show modal prompt with title, message and ok/cancel buttons
   #
@@ -82,7 +83,9 @@
   #     onclick - The callback to run when clicked
   #
   alert: (options = {}) ->
-    options.ok ?= { label: I18n.t("modals.ok") }
+    options.ok ?=
+      label: I18n.t("modals.ok")
+      onclick: => @close()
 
     @close()
     @$el = $modal = $("<div/>").html(@alertTemplate(options)).modal()

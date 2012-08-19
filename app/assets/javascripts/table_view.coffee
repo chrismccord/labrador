@@ -128,6 +128,7 @@ class @TableView extends Backbone.View
       app.hideTooltips()
       data = {}
       value = $input.val()
+      value = JSON.parse(value) if typeof item.val(field) is 'object'
       data[field] = value
       @model.update @model.collection(), item.get('primaryKeyValue'), data, (error) =>         
         @updateRowCell(item.get('primaryKeyValue'), field, value) unless error
@@ -176,7 +177,9 @@ class @TableView extends Backbone.View
     attributes = {}
     for td in $row.find("td")
       $td = $(td)
-      attributes[$td.attr('data-field')] = $td.attr('data-value')
+      value = $td.attr('data-value')
+      value = JSON.parse(value) if $td.attr("data-type") is 'json'
+      attributes[$td.attr('data-field')] = value
 
     attributes
 
@@ -224,7 +227,7 @@ class @TableView extends Backbone.View
   # Returns the rendered HTML template for the tooltip 
   editTemplate: (item, field) ->
     id = item.get('primaryKeyValue')
-    value = item.val(field)
+    value = item.val(field)    
     if value.search("\n") >= 0 or value.search(/\W/) >= 0
       """
         <div class="edit">
@@ -263,6 +266,22 @@ class @TableView extends Backbone.View
       </td>
     """
 
+
+  fieldTypeOfVal: (val) ->
+    if $.isNumeric(val)
+      'number'
+    else if typeof(val) is 'object'
+      'json'      
+    else
+      'string'
+
+
+  parseValue: (val) ->
+    val ?= ""
+    val = JSON.stringify(val) if typeof(val) is 'object'
+    val
+
+
   # Renders table body
   #
   # fields - The array of String field names
@@ -279,16 +298,9 @@ class @TableView extends Backbone.View
       id = item[primaryKeyField]
       rows.push "<tr data-id='#{id}' class='#{if count % 2 is 0 then '' else 'odd'}'>"
       for field in fields
-        val = item[field] ? ""
-        if $.isNumeric(val)
-          type = 'number'
-        else if typeof(val) is 'object'
-          type = 'json'
-          val = JSON.stringify(val)
-        else
-          type = 'string'
+        val = @parseValue(item[field])
         expanded = if expandedFields.indexOf(field) >= 0 then 'true' else 'false'
-        rows.push @cellTemplate(type, field, expanded, val)
+        rows.push @cellTemplate(@fieldTypeOfVal(val), field, expanded, val)
       rows .push "</tr>"
       count += 1
       if Math.round((count / items.length) * 100) % 5 is 0

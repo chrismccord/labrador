@@ -14,4 +14,9 @@ class @Item extends Backbone.Model
   # Get value for field
   val: (field) ->
     return unless @get('data')?
-    @get('data')[field]
+    value = @get('data')[field]
+    value = JSON.stringify(value) if typeof(value) is 'object'
+
+    value
+
+    
