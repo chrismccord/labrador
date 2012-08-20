@@ -71,7 +71,7 @@ module Labrador
       I18n.t('adapters.mongodb.title')
     end
 
-    def schema
+    def schema(collection)
       []
     end
 

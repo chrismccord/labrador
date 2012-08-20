@@ -25,7 +25,7 @@
 
   <body>
 
-    <div class="navbar navbar-top">
+    <div class="navbar navbar-top" data-view="header">
       <div class="navbar-inner">
         <div class="container-fluid">
           <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -34,6 +34,14 @@
             <span class="icon-bar"></span>
           </a>
           <a class="brand" href="#"><img src="/assets/logo.png" alt="labrador"/>Labrador</a>
+          <div class="btn-group pull-left" data-toggle="buttons-radio" data-view="context">
+            <button class="btn" data-action="schema">
+              <i class="icon-list-alt"></i> Schema
+            </button>
+            <button class="btn active" data-action="content">
+              <i class="icon-align-justify"></i> Content
+            </button>
+          </div>
           <div class="btn-group pull-right">
             <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
               <i class="icon-folder-open"></i> <%= current_app %>

@@ -64,6 +64,7 @@ class @TableView extends Backbone.View
     @$tbody.off('dblclick', 'td').on 'dblclick', 'td', (e) => 
       e.preventDefault()
       e.stopPropagation()
+      return unless app.isEditable()
       app.hideTooltips()
       $pop = $(e.currentTarget)
       field = $pop.attr("data-field")
@@ -75,10 +76,11 @@ class @TableView extends Backbone.View
 
 
 
-  bindHead: ->
+  bindHead: ->  
     @$thead.off('click', 'th').on 'click', 'th', (e) =>
       e.preventDefault()
       e.stopPropagation()
+      return unless app.isEditable()
       $target = $(e.currentTarget)
       field = $target.attr("data-field")
       direction = $target.attr('data-direction')
@@ -118,6 +120,7 @@ class @TableView extends Backbone.View
   #   field - The field name of the cell being bound
   #
   bindEditItem: ($td, item, field) ->
+    return unless app.isEditable()
     $pop = $("body > .popover:last")
     $input = $pop.find("input, textarea")
     $input.focus()

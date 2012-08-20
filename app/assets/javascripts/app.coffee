@@ -2,15 +2,16 @@ class @App extends Backbone.Model
   
   defaults:
     limit: 500
-
+    context: 'content'
 
   initialize: ->
     $ =>
       @$main = $("[data-view=main]")
-      @$collections = $("ul[data-view=collections]")
+      @$collections = $("ul[data-view=collections]")      
       @database = new Database(path: serverExports.app.path)
       @tableView = new TableView(model: @database, el: ".fixed-table-container table:first")
       @progressView = new ProgressView()  
+      @headerView = new HeaderView()
       @footerView = new FooterView(model: @database)
       Popover.init()
       @resizeBody()
@@ -32,7 +33,7 @@ class @App extends Backbone.Model
       adapter = $target.attr('data-adapter')
       @database.set(adapter: adapter)
       @tableView.showLoading()
-      @database.find collection, limit: @get('limit'), (err, data) => @database.set({data: data})
+      @showContext(collection)
 
     $(document).on 'keydown', (e) => 
       switch e.keyCode
@@ -46,10 +47,41 @@ class @App extends Backbone.Model
   resizeBody: ->
     @$main.css(height: $(window).height() - 104)
 
-  
 
   hideTooltips: ->
     app.trigger('hide:tooltips')
+
+
+  showSchema: (collection) ->
+    collection ?= @database.collection()
+    @set(context: 'schema')
+    @database.schema collection, (error, data) => @database.set({data})
+
+
+  showContent: (collection) ->
+    collection ?= @database.collection()
+    @set(context: 'content')
+    @database.find collection, limit: @get('limit'), (err, data) => @database.set({data: data})
+
+
+  refreshContext: ->
+    collection = @database.collection()
+    switch @get('context')
+      when "schema"  then @showSchema(collection)
+      when "content" then @showContent(collection)
+
+
+  showContext: (collection) ->
+    switch @get('context')
+      when "schema"  then @showSchema(collection)
+      when "content" then @showContent(collection)
+
+  
+  isEditable: ->
+    return false unless @database.collection()?
+    switch @get('context')
+      when "schema"  then false
+      when "content" then true
 
 
   showError: (error) ->

@@ -71,7 +71,7 @@ class @FooterView extends Backbone.View
 
   refresh: (e) ->
     e?.preventDefault()
-    @model.filterPrevious()
+    app.refreshContext()
     
 
   skippedCount: -> @model.get('lastFind')?.options.skip ? 0
@@ -110,6 +110,7 @@ class @FooterView extends Backbone.View
 
   deleteItem: (e) ->
     e?.preventDefault()
+    return unless app.isEditable()
     selectedItem = app.tableView.selectedItem()
     return unless selectedItem?
     primaryKey = selectedItem.get('primaryKeyName')

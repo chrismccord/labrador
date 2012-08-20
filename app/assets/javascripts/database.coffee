@@ -64,6 +64,10 @@ class @Database extends Backbone.Model
         callback?(error)
 
 
+  getCurrentSchema: (callback) ->
+    @schema(@collection(), callback)
+
+
   filterPrevious: (newOptions = {}) ->
     return unless @get('lastFind')?
     {collection, options, callback} = @get('lastFind')
