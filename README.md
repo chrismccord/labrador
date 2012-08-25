@@ -53,7 +53,7 @@ Note - The sqlite adapter uses a local .sqlite3 file in test/fixtures.
 
 
 ## Known Limitations
-Labrador uses pure ruby adapters for mysql and postgres to avoid incompitabilties with users 
-lacking postgres or mysql headers for native extension compilation. These implementations are 
-unable to establish database connections over SSL.
+Labrador uses pure ruby adapters for mysql and postgres to avoid incompatibilities with users 
+lacking postgres or mysql headers for native extension compilation. These implementations are unable 
+to establish database connections over SSL.
 
