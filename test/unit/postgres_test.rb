@@ -149,5 +149,15 @@ describe Labrador::Postgres do
       @postgres.close
       assert !@postgres.connected?
     end
-  end    
+  end
+
+  describe '#schema' do
+    it 'should return schema for users table' do
+      schema = @postgres.schema(:users)
+      assert_equal 3, schema.length
+      assert_equal "id", schema.first["field"]
+      assert_equal "username", schema.second["field"]
+      assert_equal "age", schema.third["field"]
+    end
+  end     
 end

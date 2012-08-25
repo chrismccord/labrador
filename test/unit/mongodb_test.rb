@@ -138,4 +138,10 @@ describe Labrador::MongoDB do
       assert !@mongo.connected?
     end
   end
+
+  describe '#schema' do
+    it 'should return empty array' do
+      assert_equal [], @mongo.schema(:users)
+    end
+  end
 end

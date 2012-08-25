@@ -149,5 +149,15 @@ describe Labrador::Mysql do
       @mysql.close
       assert !@mysql.connected?
     end
-  end    
+  end
+
+  describe '#schema' do
+    it 'should return schema for users table' do
+      schema = @mysql.schema(:users)
+      assert_equal 3, schema.length
+      assert_equal "id", schema.first["Field"]
+      assert_equal "username", schema.second["Field"]
+      assert_equal "age", schema.third["Field"]
+    end
+  end 
 end
