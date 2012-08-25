@@ -18,6 +18,7 @@ configurations your databases will be connected to automatically.
 
 
 ## Testing
+`rake test`
 
 Add `adapter_test` configurations with credentials for each adapter to `config/database.yml`. ie:
     
@@ -42,3 +43,6 @@ Add `adapter_test` configurations with credentials for each adapter to `config/d
         port: 27017
 
 Note - The sqlite adapter uses a local .sqlite3 file in test/fixtures.
+
+
+
