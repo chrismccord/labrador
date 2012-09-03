@@ -1,7 +1,7 @@
 class @App extends Backbone.Model
   
   defaults:
-    limit: 500
+    limit: 250
     context: 'content'
 
   initialize: ->
