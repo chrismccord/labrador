@@ -10,5 +10,5 @@
 # be sure it is on a network you trust.
 
 
-ENV['LABRADOR_USER'] = 'your_username'
-ENV['LABRADOR_PASS'] = 'your_password'
+# ENV['LABRADOR_USER'] = 'your_username'
+# ENV['LABRADOR_PASS'] = 'your_password'
