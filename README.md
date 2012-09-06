@@ -9,11 +9,11 @@ Labrador can be installed by a single copy paste of aggregated shell commands. D
  
  - Automatic intregation with [pow](http://pow.cx), allowing you to hit (myapp.larabdor.dev) and be up and running
  - Listing/paging, update, and delete support of records/documents across all your development tables/collections.
- - *Support for creating/inserting new records and documents is targetted for the next point release
+ - *Support for creating/inserting new records and documents is targeted for the next point release
  - Automatic Rails application discovery within the current app's parent folder for easy app switching
  
 ## Supported Database Adapters
-Labrador supports most mainstream database adapaters and Rails database configurations.
+Labrador supports most mainstream database adapters and Rails database configurations.
 If you are using ActiveRecord, Datamapper, or Mongoid with standard database.yml or mongoid.yml 
 configurations your databases will be connected to automatically.
  
