@@ -1,5 +1,5 @@
 # Labrador v0.1.0
-A loyal database (agnostic) client for your Rails applications' development databases.
+A loyal database (agnostic) client for your Rails development databases.
 
 ## Installation
 Labrador can be installed by a single copy paste of aggregated shell commands. Detailed instructions can be found on 
