@@ -11,15 +11,16 @@ module Labrador
       "sqlite3" => {}
     }
 
-    attr_accessor :configuration_path, :configuration, :errors, :database
+    attr_accessor :configuration_path, :configuration, :errors, :database, :app
 
 
     # initialize new Adapter from configuration path
     #
     # configuration_path - The string path to the adapter's configuration file
     #
-    def initialize(configuration_path)
+    def initialize(configuration_path, app)
       @configuration_path = File.expand_path(configuration_path)
+      @app = app
       @errors = []
     end
 
@@ -44,6 +45,24 @@ module Labrador
         host: configuration["host"],
         user: configuration["username"],
         database: configuration["database"],
+        password: configuration["password"],
+        socket: configuration["socket"]
+      }
+    end
+
+    def sqlite_credentials
+      return unless configuration
+
+      if configuration["database"].chars.first == "/"
+        db_path = configuration["database"]
+      else
+        db_path = File.expand_path("#{app.path}/#{configuration["database"]}")
+      end
+
+      {
+        host: configuration["host"],
+        user: configuration["username"],
+        database: db_path,
         password: configuration["password"],
         socket: configuration["socket"]
       }
@@ -96,7 +115,7 @@ module Labrador
         when "mongodb"        then MongoDB.new(credentials)
         when "postgresql"     then Postgres.new(credentials)
         when /^mysql(2)?$/    then Mysql.new(credentials)
-        when /^sqlite(2|3)?$/ then Sqlite.new(credentials)
+        when /^sqlite(2|3)?$/ then Sqlite.new(sqlite_credentials)
         else
           add_error(I18n.t('adapters.unsupported_adapter'))
           nil

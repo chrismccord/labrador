@@ -58,7 +58,7 @@ module Labrador
       @@supported_files.each do |file|
         path = File.expand_path("#{@path}/#{file}")
         if File.exists?(path)
-          adapter = Adapter.new(path) 
+          adapter = Adapter.new(path, self)
           @adapters << adapter if adapter.valid?
         end
       end
