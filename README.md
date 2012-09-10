@@ -17,21 +17,9 @@ Labrador can be installed by a single copy paste of aggregated shell commands. D
  
  - Automatic intregation with [pow](http://pow.cx), allowing you to hit (myapp.larabdor.dev) and be up and running
  - Listing/paging, update, and delete support of records/documents across all your development tables/collections.
- - *Support for creating/inserting new records and documents is targeted for the next point release
+ - Easy schema viewing for all your SQL database tables
  - Automatic Rails application discovery within the current app's parent folder for easy app switching
  
-### OSX Support
-Zero setup is required after installation when [pow](http://pow.cx) is installed. Simply install and then load up 
-myapp.labrador.dev.
-
-### Other Linux/Unix Support
-Add this to your .bash_profile or equivalent
-    
-    alias labrador-start="cd ~/.labrador && bundle exec rails s -e production -p 7488"
-    
-After the server is started, you can then load up localhost:7488/~/Path/to/myapp
-
-
 ## Supported Database Adapters
 Labrador supports most mainstream database adapters and Rails database configurations.
 If you are using ActiveRecord, Datamapper, or Mongoid with standard database.yml or mongoid.yml 
@@ -42,6 +30,16 @@ configurations your databases will be connected to automatically.
  - SQlite
  - MongoDB
 
+### OSX Support
+Zero setup is required after installation when [pow](http://pow.cx) is installed. Simply install and then load up 
+myapp.labrador.dev.
+
+### Other Linux/Unix Support
+Add this to your .bash_profile or equivalent
+    
+    alias labrador-start="cd ~/.labrador && bundle exec rails s -e production -p 7488"
+    
+After the server is started, you can then load up localhost:7488/~/Path/to/myapp
 
 ## Testing
 `rake test`
