@@ -20,7 +20,7 @@ Labrador can be installed by a single copy paste of aggregated shell commands. D
  - Easy schema viewing for all your SQL database tables
  - Automatic Rails application discovery within the current app's parent folder for easy app switching
  
-## Supported Database Adapters
+### Supported Database Adapters
 Labrador supports most mainstream database adapters and Rails database configurations.
 If you are using ActiveRecord, Datamapper, or Mongoid with standard database.yml or mongoid.yml 
 configurations your databases will be connected to automatically.
