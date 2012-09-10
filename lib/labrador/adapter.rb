@@ -72,7 +72,7 @@ module Labrador
     def database_yml_config
       path = File.expand_path(configuration_path)      
       return unless File.exists?(path)       
-      config = YAML.load(File.open(path))
+      config = YAML.load(ERB.new(File.read(path)).result)
 
       config["development"] rescue nil
     end
@@ -82,7 +82,7 @@ module Labrador
       path = File.expand_path(configuration_path)
       return unless File.exists?(path)
 
-      config = YAML.load(File.open(path))
+      config = YAML.load(ERB.new(File.read(path)).result)
       config = config["development"] || return
       # support mongoid 3
       config = config["sessions"]["default"] if config["sessions"]
