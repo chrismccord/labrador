@@ -41,6 +41,13 @@ Add this to your .bash_profile or equivalent
     
 After the server is started, you can then load up localhost:7488/~/Path/to/myapp
 
+## Roadmap
+
+  - Arbitrary queries
+  - Record creation
+  - Manual database connections
+  - Redis support
+
 ## Testing
 `rake test`
 
