@@ -27,6 +27,23 @@ describe Labrador::Postgres do
     end
   end
 
+  describe 'missing username' do
+    before do
+    config = YAML.load(File.read(Rails.root.join("config/database.yml")))["adapter_test"]["postgres"]
+      @pg_without_username = Labrador::Postgres.new(
+        host: config["host"],
+        user: nil,
+        password: config["password"],
+        port: config["port"],
+        database: config["database"]
+      )
+    end
+
+    it 'should use `whoami` as default username' do
+      assert_equal ["users"], @pg_without_username.collections
+    end
+  end
+
   describe '#collections' do
     it "should list collections/tables" do
       assert_equal ["users"], @postgres.collections

@@ -14,7 +14,7 @@ module Labrador
       @host     = params[:host]
       @port     = params[:port] || DEFAULT_PORT
       @database = params[:database]
-      @user     = params[:user]
+      @user     = params[:user] || `whoami`.strip
       password  = params[:password]
      
       @session = PostgresPR::Connection.new(
