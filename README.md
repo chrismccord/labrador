@@ -37,7 +37,7 @@ myapp.labrador.dev.
 ### Other Linux/Unix Support
 Add this to your .bash_profile or equivalent
     
-    alias labrador-start="cd $(HOME)/.labrador && bundle exec rails s -e production -p 7488"
+    alias labrador-start="cd $HOME/.labrador && bundle exec rails s -e production -p 7488"
     
 After the server is started, you can then load up localhost:7488/~/Path/to/myapp
 
