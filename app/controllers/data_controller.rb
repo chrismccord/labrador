@@ -40,23 +40,5 @@ class DataController < ApplicationController
 
   def collections
     render json: current_adapter.databse.collections
-  end
-
-  private
-
-  def catch_errors
-    begin
-      yield
-    rescue Exception => e
-      current_adapter.disconnect if current_adapter
-      return render_json_error(e)
-    end
-  end
-
-  def render_json_error(error)
-    error_message = error.to_s
-    render json: {
-      error: error_message
-    }
   end 
 end

@@ -5,6 +5,23 @@ class ApplicationController < ActionController::Base
 
   helper_method :exports, :current_app
 
+  
+  def catch_errors
+    begin
+      yield
+    rescue Exception => e
+      current_adapter.disconnect if current_adapter
+      return render_json_error(e)
+    end
+  end
+
+  def render_json_error(error)
+    error_message = error.to_s
+    render json: {
+      error: error_message
+    }
+  end
+
   private
 
   def exports
@@ -43,7 +60,16 @@ class ApplicationController < ActionController::Base
   end
 
   def find_applications
-    @applications = Labrador::App.find_all_from_path(apps_path)
+    begin
+      @applications = Labrador::App.find_all_from_path(apps_path)
+    rescue Exception => exeption
+      if request.xhr?
+        return render_json_error(exception)
+      else
+        flash[:dump] = exeption.to_s
+        return redirect_to error_path
+      end
+    end
   end
 
   def apps_path
