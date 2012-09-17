@@ -29,7 +29,7 @@ describe Labrador::Postgres do
 
   describe 'missing username' do
     before do
-    config = YAML.load(File.read(Rails.root.join("config/database.yml")))["adapter_test"]["postgres"]
+      config = YAML.load(File.read(Rails.root.join("config/database.yml")))["adapter_test"]["postgres"]
       @pg_without_username = Labrador::Postgres.new(
         host: config["host"],
         user: nil,

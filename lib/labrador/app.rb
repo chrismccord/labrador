@@ -7,12 +7,16 @@ module Labrador
       "config/mongoid.yml"
     ]
 
+    POW_PATH = "~/.pow"
+
     # Find and instantiate all applications from given directory path
     #
     # path - The String path to the directory containing the applications
     # 
     # Returns the Array of App instances found in path
     def self.find_all_from_path(path)
+      return [] unless path
+
       path = File.expand_path(path)
       apps = []
       directories = Dir.entries(path).select{|entry| ![".", ".."].include?(entry) }
@@ -23,6 +27,10 @@ module Labrador
       end
 
       apps
+    end
+
+    def self.supports_pow?
+      File.exist? File.expand_path(POW_PATH)
     end
 
     # Check if given directory contains a supported application

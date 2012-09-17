@@ -3,8 +3,6 @@ class ApplicationController < ActionController::Base
 
   before_filter :http_authenticate, except: [:unauthorized]
 
-
-
   helper_method :exports, :current_app
 
   private
@@ -49,16 +47,15 @@ class ApplicationController < ActionController::Base
   end
 
   def apps_path
-    if request.subdomain.present?
-      path = "~/.pow"
-    else
-      path = File.expand_path("#{path_param}/../")
+    if path_param
+      File.expand_path("#{path_param}/../")
+    elsif request.subdomain.present? && Labrador::App.supports_pow?
+      Labrador::App::POW_PATH
     end
-
-    path
   end
 
   def path_param
+    return unless params[:path].present?
     path = "#{params[:path]}"
     path += ".#{params[:format].to_s}" if params[:format]
     path = "/#{path}" if path[0] != '~'
@@ -67,7 +64,7 @@ class ApplicationController < ActionController::Base
   end
 
   def app_name_from_url
-    (request.subdomain.present? && request.subdomain) || path_param.split("/").last
+    (request.subdomain.present? && request.subdomain) || path_param.to_s.split("/").last
   end
 
   def authenticated?
