@@ -4,13 +4,13 @@ require 'minitest/autorun'
 describe Labrador::Postgres do
 
   before do
-    config = YAML.load(File.read(Rails.root.join("config/database.yml")))["adapter_test"]["postgres"]
+    @config = YAML.load(File.read(Rails.root.join("config/database.yml")))["adapter_test"]["postgres"]
     @postgres = Labrador::Postgres.new(
-      host: config["host"],
-      user: config["user"],
-      password: config["password"],
-      port: config["port"],
-      database: config["database"]
+      host: @config["host"],
+      user: @config["user"],
+      password: @config["password"],
+      port: @config["port"],
+      database: @config["database"]
     )
     @postgres.session.query("DROP TABLE IF EXISTS users")
     @postgres.session.query("
@@ -29,18 +29,33 @@ describe Labrador::Postgres do
 
   describe 'missing username' do
     before do
-      config = YAML.load(File.read(Rails.root.join("config/database.yml")))["adapter_test"]["postgres"]
       @pg_without_username = Labrador::Postgres.new(
-        host: config["host"],
+        host: @config["host"],
         user: nil,
-        password: config["password"],
-        port: config["port"],
-        database: config["database"]
+        password: @config["password"],
+        port: @config["port"],
+        database: @config["database"]
       )
     end
 
     it 'should use `whoami` as default username' do
       assert_equal ["users"], @pg_without_username.collections
+    end
+  end
+
+  describe 'missing host' do
+    before do
+      @pg_without_host = Labrador::Postgres.new(
+        host: nil,
+        user: @config['user'],
+        password: @config["password"],
+        port: @config["port"],
+        database: @config["database"]
+      )
+    end
+
+    it 'should use localhost' do
+      assert_equal ["users"], @pg_without_host.collections
     end
   end
 

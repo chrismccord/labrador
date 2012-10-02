@@ -9,9 +9,10 @@ module Labrador
     attr_accessor :host, :port, :database, :session
 
     DEFAULT_PORT = 5432
-
+    DEFAULT_HOST = 'localhost'
+    
     def initialize(params = {})      
-      @host     = params[:host]
+      @host     = params[:host] || DEFAULT_HOST
       @port     = params[:port] || DEFAULT_PORT
       @database = params[:database]
       @user     = params[:user] || `whoami`.strip
