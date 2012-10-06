@@ -64,7 +64,7 @@
     options.ok ?= { label: I18n.t("modals.ok") }
 
     @close()
-    @$el = $modal = $("<div/>").html(@promptTemplate(options)).modal()
+    @$el = $modal = $("<div/>").html(@promptTemplate(options)).modal(backdrop: false)
     $('body').append($modal)
     $modal.find('[data-action=cancel]').on 'click', (e) =>
       options.cancel.onclick?()
@@ -88,7 +88,7 @@
       onclick: => @close()
 
     @close()
-    @$el = $modal = $("<div/>").html(@alertTemplate(options)).modal()
+    @$el = $modal = $("<div/>").html(@alertTemplate(options)).modal(backdrop: false)
     $('body').append($modal)
     $modal.find('[data-action=cancel]').on 'click', (e) =>
       options.cancel.onclick?()

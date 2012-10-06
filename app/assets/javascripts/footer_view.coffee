@@ -91,7 +91,7 @@ class @FooterView extends Backbone.View
     $limit = $modal.find("[data-name=limit]")
 
     $limit.val(app.get('limit'))
-    $modal.modal()
+    $modal.modal(backdrop: false)
     $modal.find('form').off('submit').on 'submit', (e) => 
       e?.preventDefault()
       $apply.trigger('click')
