@@ -5,7 +5,7 @@ gem 'rails', '3.2.6'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
-gem 'amalgalite'
+gem 'amalgalite', '1.1.2' #, git: "git://github.com/copiousfreetime/amalgalite.git"
 gem 'postgres-pr'
 gem 'ruby-mysql', '~> 2.9.10'
 gem 'mongo', '1.6.4'

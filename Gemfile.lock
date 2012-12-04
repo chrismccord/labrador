@@ -120,7 +120,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  amalgalite
+  amalgalite (= 1.1.2)
   bson
   bson_ext
   coffee-rails (~> 3.2.1)
