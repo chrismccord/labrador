@@ -7,12 +7,12 @@ class ApplicationController < ActionController::Base
 
   
   def catch_errors
-    begin
+    # begin
       yield
-    rescue Exception => e
-      current_adapter.disconnect if current_adapter
-      return render_json_error(e)
-    end
+    # rescue Exception => e
+      # current_adapter.disconnect if current_adapter
+      # return render_json_error(e)
+    # end
   end
 
   def render_json_error(error)
@@ -60,16 +60,17 @@ class ApplicationController < ActionController::Base
   end
 
   def find_applications
-    begin
-      @applications = Labrador::App.find_all_from_path(apps_path)
-    rescue Exception => exeption
-      if request.xhr?
-        return render_json_error(exception)
-      else
-        flash[:dump] = exeption.to_s
-        return redirect_to error_path
-      end
-    end
+    # begin
+      @applications = Labrador::App.find_all_from_path(apps_path) + 
+                      Labrador::App.find_all_from_sessions(SessionsController.sessions)
+    # rescue Exception => exeption
+    #   if request.xhr?
+    #     return render_json_error(exception)
+    #   else
+    #     flash[:dump] = exeption.to_s
+    #     return redirect_to error_path
+    #   end
+    # end
   end
 
   def apps_path

@@ -1,6 +1,6 @@
 module Labrador
   class App
-    attr_accessor :name, :path, :adapters, :adapter_errors
+    attr_accessor :name, :path, :session, :virtual, :adapters, :adapter_errors
 
     @@supported_files = [
       "config/database.yml",
@@ -29,6 +29,19 @@ module Labrador
       apps
     end
 
+    def self.find_all_from_sessions(sessions = [])
+      sessions.collect do |session|
+        self.new session: session,
+                 virtual: true,
+                 name: session["name"],
+                 host: session["host"],
+                 user: session["username"],
+                 database: session["database"],
+                 password: session["password"],
+                 socket: session["socket"]                 
+      end
+    end
+
     def self.supports_pow?
       File.exist? File.expand_path(POW_PATH)
     end
@@ -48,21 +61,32 @@ module Labrador
     # attributes
     #   name - The required String name of the application
     #   path - The required String path to the application
+    #   virtual - The optional Boolean inidicating a manually created connection for the app
     #
     def initialize(attributes = {})
-      @name = attributes[:name] || (raise ArgumentError.new('Missing attribute :name'))
-      @path = attributes[:path] || (raise ArgumentError.new('Missing attributes :path'))
+      @name     = attributes[:name] || (raise ArgumentError.new('Missing attribute :name'))
+      @path     = attributes[:path] #|| (raise ArgumentError.new('Missing attributes :path'))
+      @session  = attributes[:session]
+      @virtual  = attributes[:virtual]
       @adapter_errors = []
       @adapters = []
       @connected = false
 
-      find_adapters
+      if is_virtual?
+        find_adapters_from_session
+      else
+        find_adapters_from_path
+      end
+    end
+
+    def is_virtual?
+      @virtual
     end
 
     # Find all adapters for application's supported configuration files
     #
     # Returns the array of valid adapters found
-    def find_adapters
+    def find_adapters_from_path
       @@supported_files.each do |file|
         path = File.expand_path("#{@path}/#{file}")
         if File.exists?(path)
@@ -71,6 +95,13 @@ module Labrador
         end
       end
       
+      @adapters
+    end
+
+    def find_adapters_from_session
+      adapter = Adapter.new(session, self)
+      @adapters << adapter if adapter.valid?
+
       @adapters
     end
 

@@ -19,7 +19,13 @@ module Labrador
     # configuration_path - The string path to the adapter's configuration file
     #
     def initialize(configuration_path, app)
-      @configuration_path = File.expand_path(configuration_path)
+      if configuration_path.is_a? String
+        @configuration_path = File.expand_path(configuration_path)
+      elsif configuration_path.is_a? Hash
+        @configuration = configuration_path
+      else
+        raise ArgumentError.new("Invalid configuration_path type, #{configuration_path.class}")
+      end
       @app = app
       @errors = []
     end

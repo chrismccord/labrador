@@ -16,5 +16,6 @@ Labrador::Application.routes.draw do
     end 
   end
 
+  resources :sessions
   get '/*path', to: 'pages#home'
 end

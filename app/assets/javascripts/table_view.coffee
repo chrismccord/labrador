@@ -16,7 +16,7 @@ class @TableView extends Backbone.View
 
 
   truncate: (str, limit, endWith = "...") ->
-    str = str.toString()
+    str = str?.toString() ? ""
     return str if str.length <= limit + endWith.length
     str.substring(0, limit) + endWith
 
