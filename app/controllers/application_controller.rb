@@ -52,7 +52,7 @@ class ApplicationController < ActionController::Base
 
   def current_app
     return unless app_name_from_url
-    @applications.select{|app| app.name == app_name_from_url }.first
+    @applications.select{|app| app.name.downcase == app_name_from_url }.first
   end
 
   def current_adapter
