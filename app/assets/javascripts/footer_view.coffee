@@ -13,7 +13,7 @@ class @FooterView extends Backbone.View
 
   initialize: ->
     @cacheSelectors()
-    @bind()
+    @bind() if app.hasDatabase()
 
 
   bind: ->
@@ -38,9 +38,12 @@ class @FooterView extends Backbone.View
 
 
   cacheSelectors: ->
+    @$refresh = @$("[data-action=refresh]")
     @$nextPage = @$("[data-action=next-page]")
     @$prevPage = @$("[data-action=prev-page]")
     @$status = @$("[data-name=status]")
+    @$createItem = @$("[data-action=create-item]")
+    @$removeItem = @$("[data-aciton=remove-item]")
 
 
   updatePagingState: ->
@@ -70,6 +73,7 @@ class @FooterView extends Backbone.View
 
 
   refresh: (e) ->
+    return if @$refresh.attr("data-disabled") is "true"
     e?.preventDefault()
     app.refreshContext()
     
@@ -103,6 +107,7 @@ class @FooterView extends Backbone.View
 
   createItem: (e) ->
     e?.preventDefault()
+    return if @$createItem.attr("data-disabled") is "true"
     Modal.alert
       title: I18n.t('modals.coming_soon')
       body: I18n.t('modals.not_supported')
@@ -110,6 +115,7 @@ class @FooterView extends Backbone.View
 
   deleteItem: (e) ->
     e?.preventDefault()
+    return if @$createItem.attr("data-disabled") is "true"
     return unless app.isEditable()
     selectedItem = app.tableView.selectedItem()
     return unless selectedItem?

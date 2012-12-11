@@ -1,5 +1,8 @@
 class @App extends Backbone.Model
   
+  KEYS:
+    ESCAPE: 27
+
   defaults:
     limit: 250
     context: 'content'
@@ -7,23 +10,41 @@ class @App extends Backbone.Model
   initialize: ->
     $ =>
       @$main = $("[data-view=main]")
-      @$collections = $("ul[data-view=collections]")      
-      @database = new Database(path: serverExports.app.path)
-      @tableView = new TableView(model: @database, el: ".fixed-table-container table:first")
-      @progressView = new ProgressView()  
+      @$collections = $("ul[data-view=collections]")
+      if @hasDatabase()
+        @database = new Database(path: @path())
+        @tableView = new TableView(model: @database, el: ".fixed-table-container table:first")
+        @progressView = new ProgressView()  
       @headerView = new HeaderView()
       @footerView = new FooterView(model: @database)
       Popover.init()
+      Session.init()
       @resizeBody()
       @bind()
 
 
+  hasDatabase: -> serverExports?.app?
+
+  path: -> 
+    return unless @hasDatabase()
+    serverExports.app.path
+
+
   bind: ->
-    @tableView.off('scroll').on 'scroll', => 
-      Popover.hide() if Popover.isVisible()
-
     $(window).on 'resize', => @resizeBody()
+    @bindTable()
+    @bindDatabase()
+    @bindCollections()
 
+    $(document).on 'keydown', (e) => 
+      switch e.keyCode
+        when @KEYS.ESCAPE
+          e.preventDefault()
+          @hideTooltips() 
+
+
+  bindCollections: ->
+    return unless @hasDatabase()
     @$collections.on 'click', 'li a', (e) =>
       e.preventDefault()
       $target = $(e.target)
@@ -34,16 +55,17 @@ class @App extends Backbone.Model
       @database.set(adapter: adapter)
       @tableView.showLoading()
       @showContext(collection)
+  
+  bindTable: ->
+    return unless @tableView?
+    @tableView.off('scroll').on 'scroll', => Popover.hide() if Popover.isVisible()
 
-    $(document).on 'keydown', (e) => 
-      switch e.keyCode
-        when 27
-          e.preventDefault()
-          @hideTooltips() 
 
+  bindDatabase: ->
+    return unless @database?
     @database.on 'error', (data) => @showError("Caught error from database: #{data.error}")
 
-  
+
   resizeBody: ->
     @$main.css(height: $(window).height() - 104)
 
@@ -55,12 +77,16 @@ class @App extends Backbone.Model
   showSchema: (collection) ->
     collection ?= @database.collection()
     @set(context: 'schema')
+    return unless @hasDatabase() and collection?
+
     @database.schema collection, (error, data) => @database.set({data})
 
 
   showContent: (collection) ->
     collection ?= @database.collection()
     @set(context: 'content')
+    return unless @hasDatabase() and collection?
+
     @database.find collection, limit: @get('limit'), (err, data) => @database.set({data: data})
 
 
