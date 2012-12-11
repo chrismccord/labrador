@@ -13,10 +13,10 @@
 
   <% if flash[:dump] %>
     <p>
-      <pre><%= flash[:dump].to_yaml %></pre>
+      <pre><%= flash[:dump].kind_of?(Hash) ? flash[:dump].to_yaml : flash[:dump] %></pre>
     </p>
   <% end %>
-  <a href="<%= root_url %>" class="btn">
+  <a href="<%= url_for(:back) %>" class="btn">
     <i class="icon-refresh"></i> 
     <%= t('pages.error.try_again') %>
   </a>

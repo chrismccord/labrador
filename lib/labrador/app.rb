@@ -29,16 +29,21 @@ module Labrador
       apps
     end
 
-    def self.find_all_from_sessions(sessions = [])
+    # Find and instantiate all applications from active Sessions
+    #
+    # sessions - The Session Array. Defaults to active Sessions
+    # 
+    # Returns the Array of App instances
+    def self.find_all_from_sessions(sessions = Session.active)
       sessions.collect do |session|
         self.new session: session,
                  virtual: true,
-                 name: session["name"],
-                 host: session["host"],
-                 user: session["username"],
-                 database: session["database"],
-                 password: session["password"],
-                 socket: session["socket"]                 
+                 name: session.name,
+                 host: session.host,
+                 user: session.username,
+                 database: session.database,
+                 password: session.password,
+                 socket: session.socket
       end
     end
 
@@ -62,6 +67,7 @@ module Labrador
     #   name - The required String name of the application
     #   path - The required String path to the application
     #   virtual - The optional Boolean inidicating a manually created connection for the app
+    #   session - The optional Session for the Application's connection. Required if virtual
     #
     def initialize(attributes = {})
       @name     = attributes[:name] || (raise ArgumentError.new('Missing attribute :name'))
@@ -99,7 +105,7 @@ module Labrador
     end
 
     def find_adapters_from_session
-      adapter = Adapter.new(session, self)
+      adapter = Adapter.new(session.to_hash, self)
       @adapters << adapter if adapter.valid?
 
       @adapters

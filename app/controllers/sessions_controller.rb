@@ -1,27 +1,29 @@
 class SessionsController < ApplicationController
+  include ApplicationHelper
 
-  
-  def self.sessions
-    Rails.cache.fetch(:sessions){ [] }
-  end  
-  
-  def self.sessions=(sessions)
-    Rails.cache.write :sessions, sessions
-  end  
-
-  def self.add_session(session)
-    session.each{|key, value| session[key] = nil if value.blank? }
-    Rails.cache.write :sessions, [session]
-  end
+  before_filter :find_applications, only: [:new]
+  around_filter :catch_errors, only: [:create, :destroy]
 
   def new
   end
 
   def create
-    SessionsController.add_session params[:session]
-    redirect_to "http://#{params[:session][:name]}.labrador-dev.dev"
+    app = Labrador::App.new(session_params)
+    Labrador::Session.add session_params
+    redirect_to app_url(app)
   end
 
   def destroy
+    Labrador::Session.clear_all
+    redirect_to root_url(subdomain: false)
+  end
+
+  private
+
+  def session_params
+    params[:session] ||= {}
+    params[:session].each{|key, value| session[key] = nil if value.blank? }
+    
+    params[:session]
   end
 end

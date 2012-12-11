@@ -7,12 +7,17 @@ class ApplicationController < ActionController::Base
 
   
   def catch_errors
-    # begin
+    begin
       yield
-    # rescue Exception => e
-      # current_adapter.disconnect if current_adapter
-      # return render_json_error(e)
-    # end
+    rescue Exception => exeption
+      current_adapter.disconnect if current_adapter
+      if request.xhr?
+        return render_json_error(exception)
+      else
+        flash[:dump] = exeption.to_s
+        return redirect_to error_path
+      end
+    end
   end
 
   def render_json_error(error)
@@ -56,27 +61,27 @@ class ApplicationController < ActionController::Base
   end
 
   def current_adapter
-    @adapters.select{|a| a.name == params[:adapter] }.first
+    @adapters && @adapters.select{|a| a.name == params[:adapter] }.first
   end
 
   def find_applications
-    # begin
+    begin
       @applications = Labrador::App.find_all_from_path(apps_path) + 
-                      Labrador::App.find_all_from_sessions(SessionsController.sessions)
-    # rescue Exception => exeption
-    #   if request.xhr?
-    #     return render_json_error(exception)
-    #   else
-    #     flash[:dump] = exeption.to_s
-    #     return redirect_to error_path
-    #   end
-    # end
+                      Labrador::App.find_all_from_sessions
+    rescue Exception => exeption
+      if request.xhr?
+        return render_json_error(exception)
+      else
+        flash[:dump] = exeption.to_s
+        return redirect_to error_path
+      end
+    end
   end
 
   def apps_path
     if path_param
       File.expand_path("#{path_param}/../")
-    elsif request.subdomain.present? && Labrador::App.supports_pow?
+    elsif Labrador::App.supports_pow?
       Labrador::App::POW_PATH
     end
   end

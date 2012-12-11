@@ -81,6 +81,10 @@ en:
         body: "Delete item (%{primary_key} = %{id})? This operation cannot be undone."
         ok: "Delete"
         cancel: "Cancel"
+    connection_name:
+      invalid:
+        title: "Invalid Connection Name"
+        body: "The connection name cannot be blank"
     settings:
       title: "Settings"
       close: "Cancel"

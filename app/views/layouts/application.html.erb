@@ -29,15 +29,19 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="#"><img src="/assets/logo.png" alt="labrador"/>Labrador</a>
-          <div class="btn-group pull-left" data-toggle="buttons-radio" data-view="context">
-            <button class="btn" data-action="schema">
-              <i class="icon-list-alt"></i> <%= t('database.structure') %>
-            </button>
-            <button class="btn active" data-action="content">
-              <i class="icon-align-justify"></i> <%= t('database.content') %>
-            </button>
-          </div>
+          <a class="brand" href="<%= new_session_url(subdomain: false) %>"><img src="/assets/logo.png" alt="labrador"/>Labrador</a>
+
+          <% if current_app %>
+            <div class="btn-group pull-left" data-toggle="buttons-radio" data-view="context">
+              <button class="btn" data-action="schema">
+                <i class="icon-list-alt"></i> <%= t('database.structure') %>
+              </button>
+              <button class="btn active" data-action="content">
+                <i class="icon-align-justify"></i> <%= t('database.content') %>
+              </button>
+            </div>
+          <% end %>
+
           <div class="btn-group pull-right">
             <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
               <i class="icon-folder-open"></i> <%= current_app %>
@@ -49,8 +53,17 @@
                   <a href="<%= app_url(app) %>"><%= app %></a>
                 </li>
               <% end %>
+              <li class="divider"></li>
+              <li>
+                <%= link_to session_path('all'), method: 'delete' do %>
+                  <i class="icon-off"></i> Clear Sessions
+                <% end %>
+              </li>
             </ul>
           </div>
+          <a class="btn pull-right" href="<%= new_session_url(subdomain: false) %>">
+            <i class="icon-plus-sign"></i> Connect
+          </a>
           <div class="nav-collapse">
           </div>
         </div>
@@ -81,18 +94,18 @@
       <div class="span9">
         <div class="pull-right">
           <ul data-view="controls">
-            <li data-action="refresh"><i class="icon-repeat"></i></li>
-            <li data-action="prev-page"><i class="icon-chevron-left"></i></li>
+            <li data-action="refresh" data-disabled="<%= current_app.nil? %>"><i class="icon-repeat"></i></li>
+            <li data-action="prev-page" data-disabled="<%= current_app.nil? %>"><i class="icon-chevron-left"></i></li>
             <li data-action="config">
               <i class="icon-cog"></i>              
             </li>
-            <li data-action="next-page"><i class="icon-chevron-right"></i></li>
+            <li data-action="next-page" data-disabled="<%= current_app.nil? %>"><i class="icon-chevron-right"></i></li>
           </ul>
         </div>
         <div class="pull-left">
           <ul data-view="controls">
-            <li data-action="create-item"><i class="icon-plus"></i></li>
-            <li data-action="delete-item"><i class="icon-minus"></i></li>
+            <li data-action="create-item" data-disabled="<%= current_app.nil? %>"><i class="icon-plus"></i></li>
+            <li data-action="delete-item" data-disabled="<%= current_app.nil? %>"><i class="icon-minus"></i></li>
           </ul>
         </div>
         <div class="pull-left">
