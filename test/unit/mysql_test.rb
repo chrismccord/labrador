@@ -10,7 +10,8 @@ describe Labrador::Mysql do
       user: config["user"],
       password: config["password"],
       port: config["port"],
-      database: config["database"]
+      database: config["database"],
+      socket: config["socket"]
     )
     @mysql.session.query("DROP TABLE IF EXISTS users")
     @mysql.session.query("

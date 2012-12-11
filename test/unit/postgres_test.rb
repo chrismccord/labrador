@@ -1,9 +1,33 @@
 require 'test_helper'
 require 'minitest/autorun'
+require 'active_record'
 
 describe Labrador::Postgres do
 
+  # Kill test postgres database connections
+  def terminate_postgres_connections
+    db_names = ["labrador_test"]
+
+    terminated = false
+    last_error = ""
+    ["procpid", "pid"].each do |process_id_field|
+      begin
+        results = ActiveRecord::Base.connection.execute("
+          SELECT pg_terminate_backend(#{process_id_field})
+          FROM pg_stat_activity
+          WHERE #{process_id_field} <> pg_backend_pid()
+          AND datname IN(#{db_names})
+        ")
+        terminated = true
+      rescue => e
+        last_error = e.to_s
+      end
+      break if terminated
+    end
+  end
+
   before do
+    terminate_postgres_connections
     @config = YAML.load(File.read(Rails.root.join("config/database.yml")))["adapter_test"]["postgres"]
     @postgres = Labrador::Postgres.new(
       host: @config["host"],
