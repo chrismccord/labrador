@@ -9,7 +9,7 @@ en:
     connection_name: "Connection Name"
     connection_name_placeholder: "URL friendly Connection Name"
     host: "Host"
-    host_placeholder: "host"
+    host_placeholder: "127.0.0.1"
     username: "Username"
     username_placeholder: "username"
     database: "Database"
