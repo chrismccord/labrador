@@ -2,6 +2,22 @@
 # See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
 en:
+  applications: "applications"
+  connect:
+    title: "Connect"
+    adapter: "Adapter"
+    connection_name: "Connection Name"
+    connection_name_placeholder: "URL friendly Connection Name"
+    host: "Host"
+    host_placeholder: "host"
+    username: "Username"
+    username_placeholder: "username"
+    database: "Database"
+    database_placeholder: "database"
+    password: "Password"
+    password_placeholder: "password"
+    socket: "Socket"
+    socket_placeholder: "socket"
   database:
     structure: 'Structure'
     content: 'Content'
