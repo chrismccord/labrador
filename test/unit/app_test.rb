@@ -25,6 +25,20 @@ describe Labrador::App do
     end
   end
 
+  describe 'self#find_all_from_sessions' do
+    before do
+      Labrador::Session.clear_all
+      Labrador::Session.add Labrador::Session.new("name" => 'test1')
+      Labrador::Session.add Labrador::Session.new("name" => 'test2')
+      Labrador::Session.add Labrador::Session.new("name" => 'test3')
+      @apps = Labrador::App.find_all_from_sessions(Labrador::Session.active)
+    end
+
+    it 'should find all apps in Session.active' do
+      assert_equal Labrador::Session.active.count, @apps.count
+    end
+  end
+
   describe 'self#is_supported_app?' do
     it 'should be true for directories that are rails apps' do
       assert Labrador::App.is_supported_app?("test/fixtures/apps/database_yml_app1")

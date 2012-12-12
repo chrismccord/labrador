@@ -6,17 +6,23 @@ describe Labrador::Postgres do
 
   # Kill test postgres database connections
   def terminate_postgres_connections
-    db_names = ["labrador_test"]
-
+    config = YAML.load(File.read(Rails.root.join("config/database.yml")))["adapter_test"]["postgres"]    
+    postgres = Labrador::Postgres.new(
+      host: config["host"],
+      user: config["user"],
+      password: config["password"],
+      port: config["port"],
+      database: config["database"]
+    )
     terminated = false
     last_error = ""
     ["procpid", "pid"].each do |process_id_field|
       begin
-        results = ActiveRecord::Base.connection.execute("
+        postgres.session.query("
           SELECT pg_terminate_backend(#{process_id_field})
           FROM pg_stat_activity
           WHERE #{process_id_field} <> pg_backend_pid()
-          AND datname IN(#{db_names})
+          AND datname IN('labrador_test')
         ")
         terminated = true
       rescue => e
@@ -26,9 +32,12 @@ describe Labrador::Postgres do
     end
   end
 
-  before do
+  after :each do
     terminate_postgres_connections
-    @config = YAML.load(File.read(Rails.root.join("config/database.yml")))["adapter_test"]["postgres"]
+  end
+
+  before do
+    @config = YAML.load(File.read(Rails.root.join("config/database.yml")))["adapter_test"]["postgres"]    
     @postgres = Labrador::Postgres.new(
       host: @config["host"],
       user: @config["user"],
@@ -52,7 +61,7 @@ describe Labrador::Postgres do
   end
 
   describe 'missing username' do
-    before do
+    before do      
       @pg_without_username = Labrador::Postgres.new(
         host: @config["host"],
         user: nil,
@@ -68,7 +77,7 @@ describe Labrador::Postgres do
   end
 
   describe 'missing host' do
-    before do
+    before do      
       @pg_without_host = Labrador::Postgres.new(
         host: nil,
         user: @config['user'],
