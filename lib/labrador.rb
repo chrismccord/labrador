@@ -1,3 +1,4 @@
+require "labrador/version"
 require "labrador/adapter"
 require "labrador/app"
 require "labrador/configuration"
