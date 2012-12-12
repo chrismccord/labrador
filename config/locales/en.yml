@@ -7,7 +7,7 @@ en:
     title: "Connect"
     adapter: "Adapter"
     connection_name: "Connection Name"
-    connection_name_placeholder: "URL friendly Connection Name"
+    connection_name_placeholder: "URL Friendly Connection Name"
     host: "Host"
     host_placeholder: "127.0.0.1"
     username: "Username"
