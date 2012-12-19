@@ -19,6 +19,7 @@ Labrador can be installed by a single copy paste of aggregated shell commands. D
  - Listing/paging, update, and delete support of records/documents across all your development tables/collections.
  - Easy schema viewing for all your SQL database tables
  - Automatic Rails application discovery within the current app's parent folder for easy app switching
+ - Manual database connections for non-Rails application support by simply visiting labrador.dev/
  
 ### Supported Database Adapters
 Labrador supports most mainstream database adapters and Rails database configurations.
@@ -42,10 +43,9 @@ Add this to your .bash_profile or equivalent
 After the server is started, you can then load up localhost:7488/~/Path/to/myapp
 
 ## Roadmap
-
+  - ~~Manual database connections~~ (completed in v0.20)
   - Arbitrary queries
-  - Record creation
-  - Manual database connections
+  - Record creation  
   - Redis support
 
 ## Testing
