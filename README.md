@@ -43,7 +43,7 @@ Add this to your .bash_profile or equivalent
 After the server is started, you can then load up localhost:7488/~/Path/to/myapp
 
 ## Roadmap
-  - ~~Manual database connections~~ (completed in v0.20)
+  - ~~Manual database connections~~ (completed in v0.2.0)
   - Arbitrary queries
   - Record creation  
   - Redis support
