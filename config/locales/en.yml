@@ -118,7 +118,7 @@ en:
       issue_tracker: "Issue Tracker"
     unauthorized:
       title: "Incomplete Configuration"
-      message: "Labrador requires HTTP Basic Authentication environmenet variables to protect your development databases from unauthorized access."
+      message: "Labrador requires HTTP Basic Authentication environment variables to protect your development databases from unauthorized access."
       explanation: "Add your <code>ENV['LABRADOR_USER']</code> and <code>ENV['LABRADOR_PASS']</code> credentials to the file <br/><code>%{path}</code><br/>and restart your server."
 
   status:
