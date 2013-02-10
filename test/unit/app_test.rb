@@ -58,6 +58,29 @@ describe Labrador::App do
     end
   end
 
+  describe '#errors' do
+    it 'should return an array of errors from all adapters' do
+      app = Labrador::App.find_all_from_path("test/fixtures/apps").first
+      assert app.errors.is_a? Array
+    end
+  end
+
+  describe '#connect' do
+    before do
+      @app = Labrador::App.find_all_from_path("test/fixtures/apps").first
+    end
+
+    it 'should connect' do
+      assert @app.connect
+    end
+
+    it 'should be connected' do
+      @app.connect
+      assert @app.connected?
+    end
+  end
+
+
   describe '#to_s' do
     it 'should convert to string' do
       app = Labrador::App.find_all_from_path("test/fixtures/apps").first
