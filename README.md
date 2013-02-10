@@ -1,4 +1,4 @@
-# Labrador v0.2.0
+# Labrador v0.2.1
 A loyal database (agnostic) client for your Rails development databases.
 
 ## Installation
@@ -30,6 +30,7 @@ configurations your databases will be connected to automatically.
  - MySQL
  - SQlite
  - MongoDB
+ - RethinkDB
 
 ### OSX Support
 Zero setup is required after installation when [pow](http://pow.cx) is installed. Simply install and then load up 
@@ -72,6 +73,10 @@ Add `adapter_test` configurations with credentials for each adapter to `config/d
         user: username
         password: password
         port: 27017
+      rethinkdb:
+        database: labrador_test
+        host: localhost
+        port: 28015
 
 Note - The sqlite adapter uses a local .sqlite3 file in test/fixtures.
 
