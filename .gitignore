@@ -16,4 +16,4 @@ config/secret_token.yml
 /log/*.log
 /tmp
 test/fixtures/sqlite.sqlite3
-
+rethinkdb_data

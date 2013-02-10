@@ -31,6 +31,14 @@ en:
       collection:
         one: "collection"
         other: "collections"
+    rethinkdb:
+      title: "RethinkDB"
+      result:
+        one: "document"
+        other: "documents"
+      collection:
+        one: "collection"
+        other: "collections"
     mysql:
       title: "MySQL"
       result:

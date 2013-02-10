@@ -6,7 +6,7 @@ Labrador::Application.routes.draw do
   get 'error', to: 'pages#error', as: 'error'
   
   scope "data" do
-    ['mongodb', 'postgresql', 'mysql', 'mysql2', 'sqlite', 'sqlite2', 'sqlite3'].each do |adapter|
+    Labrador::Constants::ADAPTER_KEYS.each do |adapter|
       resources adapter, controller: 'data', adapter: adapter do
         collection do
           get :collections, action: 'collections'

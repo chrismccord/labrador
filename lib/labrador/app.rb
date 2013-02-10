@@ -1,6 +1,6 @@
 module Labrador
   class App
-    attr_accessor :name, :path, :session, :virtual, :adapters, :adapter_errors
+    attr_accessor :name, :connected, :path, :session, :virtual, :adapters, :adapter_errors
 
     @@supported_files = [
       "config/database.yml",
@@ -97,31 +97,39 @@ module Labrador
         path = File.expand_path("#{@path}/#{file}")
         if File.exists?(path)
           adapter = Adapter.new(path, self)
-          @adapters << adapter if adapter.valid?
+          self.adapters << adapter if adapter.valid?
         end
       end
       
-      @adapters
+      self.adapters
     end
 
     def find_adapters_from_session
       adapter = Adapter.new(session.to_hash, self)
-      @adapters << adapter if adapter.valid?
+      self.adapters << adapter if adapter.valid?
 
-      @adapters
+      self.adapters
     end
 
     def adapter_names
-      @adapters.collect(&:name)
+      self.adapters.collect(&:name)
+    end
+
+    def connected?
+      self.connected
     end
 
     # Establish connection to each of application's adapters
     def connect
-      return if @connected
-      @adapters.each{|adapter| adapter.connect }
-      @connected = true
+      return if connected?
+      self.adapters.each{|adapter| adapter.connect }
+      self.connected = true
     end
 
+    def errors
+      self.adapters.collect(&:errors).flatten
+    end
+    
     def to_s
       @name.to_s
     end

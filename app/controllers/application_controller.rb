@@ -9,12 +9,12 @@ class ApplicationController < ActionController::Base
   def catch_errors
     begin
       yield
-    rescue Exception => exeption
+    rescue Exception => exception
       current_adapter.disconnect if current_adapter
       if request.xhr?
         return render_json_error(exception)
       else
-        flash[:dump] = exeption.to_s
+        flash[:dump] = exception.to_s
         return redirect_to error_path
       end
     end
@@ -41,8 +41,8 @@ class ApplicationController < ActionController::Base
     @adapters = []
     return unless current_app
     current_app.connect
-    if current_app.adapters.collect(&:errors).flatten.any?
-      error = current_app.adapters.collect(&:errors).flatten.first
+    if current_app.errors.any?
+      error = current_app.errors.first
       flash[:dump] = error[:dump]
       flash[:notice] = t('flash.notice.invalid_adapter', 
         adapter: error[:adapter], 
@@ -68,11 +68,11 @@ class ApplicationController < ActionController::Base
     begin
       @applications = Labrador::App.find_all_from_path(apps_path) + 
                       Labrador::App.find_all_from_sessions
-    rescue Exception => exeption
+    rescue Exception => exception
       if request.xhr?
         return render_json_error(exception)
       else
-        flash[:dump] = exeption.to_s
+        flash[:dump] = exception.to_s
         return redirect_to error_path
       end
     end

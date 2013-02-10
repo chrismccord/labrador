@@ -28,6 +28,7 @@
             <option value="mongodb">MongoDB</option>
             <option value="mysql">MySQL</option>
             <option value="sqlite">SQLite</option>
+            <option value="rethinkdb">RethinkDB</option>
           </select>
         </div>
       </div>
@@ -37,7 +38,7 @@
           <input type="text" id="name" placeholder="<%= t('connect.connection_name_placeholder') %>" name="session[name]" />
         </div>
       </div>
-      <div class="control-group" data-adapter-dependent data-postgresql data-mongodb data-mysql>
+      <div class="control-group" data-adapter-dependent data-postgresql data-mongodb data-mysql data-rethinkdb>
         <label class="control-label" for="host"><%= t('connect.host') %></label>
         <div class="controls">
           <input type="text" id="host" placeholder="<%= t('connect.host_placeholder') %>" name="session[host]" value="127.0.0.1" />

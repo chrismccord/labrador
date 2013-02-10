@@ -2,13 +2,14 @@ module Labrador
   class Adapter
 
     @@connections = {
-      "mongodb" => {},
+      "mongodb"    => {},
       "postgresql" => {},
-      "mysql" => {},
-      "mysql2" => {},
-      "sqlite" => {},
-      "sqlite2" => {},
-      "sqlite3" => {}
+      "mysql"      => {},
+      "mysql2"     => {},
+      "sqlite"     => {},
+      "sqlite2"    => {},
+      "sqlite3"    => {},
+      "rethinkdb"  => {}
     }
 
     attr_accessor :configuration_path, :configuration, :errors, :database, :app
@@ -113,7 +114,7 @@ module Labrador
     #
     def connect
       return unless configuration
-      @database = @@connections[name][db_name]    
+      @database = @@connections[name][db_name]
       return true if connected?
 
       begin
@@ -122,8 +123,9 @@ module Labrador
         when "postgresql"     then Postgres.new(credentials)
         when /^mysql(2)?$/    then Mysql.new(credentials)
         when /^sqlite(2|3)?$/ then Sqlite.new(sqlite_credentials)
+        when "rethinkdb"      then Labrador::RethinkDB.new(credentials)
         else
-          add_error(I18n.t('adapters.unsupported_adapter'))
+          add_error(I18n.t('adapters.unsupported_adapter', adapter: name))
           nil
         end
       rescue Exception => e
