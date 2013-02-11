@@ -31,10 +31,6 @@ class ApplicationController < ActionController::Base
   def exports
     gon
   end
-
-  def parse_options
-    params.slice(:limit, :order_by, :direction, :conditions, :skip)
-  end
   
   def find_adapters
     @adapters = []
