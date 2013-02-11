@@ -21,9 +21,8 @@ class ApplicationController < ActionController::Base
   end
 
   def render_json_error(error)
-    error_message = error.to_s
     render json: {
-      error: error_message
+      error: error.to_s
     }
   end
 
@@ -42,14 +41,7 @@ class ApplicationController < ActionController::Base
     return unless current_app
     current_app.connect
     if current_app.errors.any?
-      error = current_app.errors.first
-      flash[:dump] = error[:dump]
-      flash[:notice] = t('flash.notice.invalid_adapter', 
-        adapter: error[:adapter], 
-        app: current_app.name
-      )
-      flash[:error] = error[:message]
-      return redirect_to error_path
+      return render_adapter_error(current_app.errors.first)
     end
 
     @adapters = current_app.adapters
@@ -96,11 +88,30 @@ class ApplicationController < ActionController::Base
   end
 
   def app_name_from_url
-    (request.subdomain.present? && request.subdomain) || path_param.to_s.split("/").last
+    if request.subdomain.present?
+      request.subdomain
+    else
+      path_param.to_s.split("/").last
+    end
   end
 
   def authenticated?
     session[:authenticated]
+  end
+
+  # Handle redirecting to error page from an AdapterError
+  #
+  # adapter_error - The AdapterError generated from the current application
+  #
+  # Redirects to error_path with flash populated from error context
+  def render_adapter_error(adapter_error)
+    flash[:dump] = adapter_error.dump
+    flash[:notice] = t('flash.notice.invalid_adapter', 
+      adapter: adapter_error.adapter, 
+      app: current_app.name
+    )
+    flash[:error] = adapter_error.message
+    return redirect_to error_path
   end
 
   def http_authenticate

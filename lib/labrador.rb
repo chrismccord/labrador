@@ -1,5 +1,6 @@
 require "labrador/version"
 require "labrador/adapter"
+require "labrador/adapter_error"
 require "labrador/app"
 require "labrador/configuration"
 require "labrador/mongo_db"

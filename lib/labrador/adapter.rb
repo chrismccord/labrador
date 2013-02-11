@@ -150,11 +150,11 @@ module Labrador
     end
 
     def add_error(message)
-      @errors << {
-        message: message,
-        adapter: name,
+      @errors << AdapterError.new(
+        message: message, 
+        adapter: name, 
         dump: configuration
-      }
+      )
     end
   end
 end
