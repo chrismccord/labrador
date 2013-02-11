@@ -71,7 +71,7 @@ module Labrador
     #
     def initialize(attributes = {})
       @name     = attributes[:name] || (raise ArgumentError.new('Missing attribute :name'))
-      @path     = attributes[:path] #|| (raise ArgumentError.new('Missing attributes :path'))
+      @path     = attributes[:path]
       @session  = attributes[:session]
       @virtual  = attributes[:virtual]
       @adapter_errors = []
@@ -86,7 +86,7 @@ module Labrador
     end
 
     def is_virtual?
-      @virtual
+      self.virtual
     end
 
     # Find all adapters for application's supported configuration files
@@ -94,7 +94,7 @@ module Labrador
     # Returns the array of valid adapters found
     def find_adapters_from_path
       @@supported_files.each do |file|
-        path = File.expand_path("#{@path}/#{file}")
+        path = File.expand_path("#{self.path}/#{file}")
         if File.exists?(path)
           adapter = Adapter.new(path, self)
           self.adapters << adapter if adapter.valid?
@@ -131,13 +131,13 @@ module Labrador
     end
     
     def to_s
-      @name.to_s
+      name.to_s
     end
 
     def as_json(options = nil)
       {
-        name: @name,
-        path: @path        
+        name: name,
+        path: path
       }
     end
   end
