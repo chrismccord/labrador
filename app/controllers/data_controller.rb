@@ -29,7 +29,7 @@ class DataController < ApplicationController
   end
 
   def update
-    current_adapter.database.update(params[:collection], params[:id], params[:data])
+    current_adapter.database.update(params[:collection], params[:id], params[:data].to_hash)
     render json: { success: true }
   end
 
