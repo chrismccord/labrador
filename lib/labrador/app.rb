@@ -71,7 +71,7 @@ module Labrador
     #
     def initialize(attributes = {})
       @name     = attributes[:name] || (raise ArgumentError.new('Missing attribute :name'))
-      @path     = attributes[:path]
+      @path     = attributes[:path] || @name
       @session  = attributes[:session]
       @virtual  = attributes[:virtual]
       @adapter_errors = []
