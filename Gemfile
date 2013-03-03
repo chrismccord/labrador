@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.11'
+gem 'rails', '3.2.12'
 gem 'amalgalite', '1.1.2'
 gem 'postgres-pr'
 gem 'ruby-mysql', '~> 2.9.10'
