@@ -64,13 +64,13 @@
     options.ok ?= { label: I18n.t("modals.ok") }
 
     @close()
-    @$el = $modal = $("<div/>").html(@promptTemplate(options)).modal(backdrop: false)
-    $('body').append($modal)
-    $modal.find('[data-action=cancel]').on 'click', (e) =>
+    @$el = $("<div/>").html(@promptTemplate(options)).modal(backdrop: false)
+    $('body').append(@$el)
+    @$el.find('[data-action=cancel]').on 'click', (e) =>
       options.cancel.onclick?()
-    $modal.find('[data-action=ok]').on 'click', (e) =>
+    @$el.find('[data-action=ok]').on 'click', (e) =>
       options.ok.onclick?()      
-    $modal.modal('show')
+    @$el.modal('show')
 
 
   # Show modal alert with title, message and ok button
@@ -88,12 +88,12 @@
       onclick: => @close()
 
     @close()
-    @$el = $modal = $("<div/>").html(@alertTemplate(options)).modal(backdrop: false)
-    $('body').append($modal)
-    $modal.find('[data-action=cancel]').on 'click', (e) =>
+    @$el = $("<div/>").html(@alertTemplate(options)).modal(backdrop: false)
+    $('body').append(@$el)
+    @$el.find('[data-action=cancel]').on 'click', (e) =>
       options.cancel.onclick?()
-    $modal.find('[data-action=ok]').on 'click', (e) =>
+    @$el.find('[data-action=ok]').on 'click', (e) =>
       options.ok.onclick?()      
-    $modal.modal('show')
+    @$el.modal('show')
 
 
