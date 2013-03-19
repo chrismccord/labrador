@@ -111,6 +111,10 @@ module Labrador
       self.adapters
     end
 
+    def find_adapter_by_name(name)
+      self.adapters.select{|adapter| adapter.name == name }.first
+    end
+
     def adapter_names
       self.adapters.collect(&:name)
     end
@@ -124,6 +128,11 @@ module Labrador
       return if connected?
       self.adapters.each{|adapter| adapter.connect }
       self.connected = true
+    end
+
+    def disconnect
+      self.adapters.each{|adapter| adapter.disconnect }
+      self.connected = false
     end
 
     def errors

@@ -58,6 +58,18 @@ describe Labrador::App do
     end
   end
 
+  describe '#find_adapter_by_name' do
+    it 'should be true with existing app by name' do
+      app = Labrador::App.find_all_from_path("test/fixtures/apps").first
+      assert app.find_adapter_by_name("mysql2")
+    end
+
+    it 'should be false with no existing app by name' do
+      app = Labrador::App.find_all_from_path("test/fixtures/apps").first
+      refute app.find_adapter_by_name("noexist")
+    end
+  end
+
   describe '#errors' do
     it 'should return an array of errors from all adapters' do
       app = Labrador::App.find_all_from_path("test/fixtures/apps").first
