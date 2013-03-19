@@ -18,6 +18,7 @@ class SessionsController < ApplicationController
     redirect_to root_url(subdomain: false)
   end
 
+
   private
 
   def session_params

@@ -1,5 +1,5 @@
 <% content_for :sidebar do %>
-  <% @adapters.each do |adapter| %>  
+  <% current_app.adapters.each do |adapter| %>  
     <ul class="nav nav-list">
       <li class="nav-header">      
         <b><%= current_app %></b> <%= adapter.database.collection_name(2) %>

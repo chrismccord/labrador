@@ -31,7 +31,7 @@
           </a>
           <a class="brand" href="<%= new_session_url(subdomain: false) %>"><img src="/assets/logo.png" alt="labrador"/>Labrador</a>
 
-          <% if current_app %>
+          <% if current_app.connected? %>
             <div class="btn-group pull-left" data-toggle="buttons-radio" data-view="context">
               <button class="btn" data-action="schema">
                 <i class="icon-list-alt"></i> <%= t('database.structure') %>

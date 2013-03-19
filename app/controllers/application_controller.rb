@@ -1,29 +1,23 @@
 class ApplicationController < ActionController::Base
+
   protect_from_forgery
+
+  attr_accessor :applications
 
   before_filter :http_authenticate, except: [:unauthorized]
 
   helper_method :exports, :current_app
 
-  
   def catch_errors
     begin
       yield
     rescue Exception => exception
-      current_adapter.disconnect if current_adapter
-      if request.xhr?
-        return render_json_error(exception)
-      else
-        flash[:dump] = exception.to_s
-        return redirect_to error_path
-      end
+      handle_runtime_error(exception)
     end
   end
 
   def render_json_error(error)
-    render json: {
-      error: error.to_s
-    }
+    render json: { error: error.to_s }
   end
 
   private
@@ -31,38 +25,29 @@ class ApplicationController < ActionController::Base
   def exports
     gon
   end
-  
-  def find_adapters
-    @adapters = []
-    return unless current_app
-    current_app.connect
-    if current_app.errors.any?
-      return render_adapter_error(current_app.errors.first)
-    end
-
-    @adapters = current_app.adapters
-  end
 
   def current_app
-    return unless app_name_from_url
-    @applications.select{|app| app.name.downcase == app_name_from_url }.first
+    find_application_from_url || Labrador::NullApp.new
   end
 
   def current_adapter
-    @adapters && @adapters.select{|a| a.name == params[:adapter] }.first
+    current_app.find_adapter_by_name(params[:adapter])
+  end
+
+  def find_application_from_url
+    @applications.select{|app| app.name.downcase == app_name_from_url }.first
   end
 
   def find_applications
     begin
       @applications = Labrador::App.find_all_from_path(apps_path) + 
                       Labrador::App.find_all_from_sessions
-    rescue Exception => exception
-      if request.xhr?
-        return render_json_error(exception)
-      else
-        flash[:dump] = exception.to_s
-        return redirect_to error_path
+      current_app.connect
+      if current_app.errors.any?
+        return render_adapter_error(current_app.errors.first)
       end
+    rescue Exception => exception
+      handle_runtime_error(exception)
     end
   end
 
@@ -108,6 +93,16 @@ class ApplicationController < ActionController::Base
     )
     flash[:error] = adapter_error.message
     return redirect_to error_path
+  end
+
+  def handle_runtime_error(exception)
+    current_app.disconnect
+    if request.xhr?
+      return render_json_error(exception)
+    else
+      flash[:dump] = exception.to_s
+      return redirect_to error_path
+    end
   end
 
   def http_authenticate
