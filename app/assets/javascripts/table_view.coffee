@@ -40,12 +40,8 @@ class @TableView extends Backbone.View
     lastScrollTop = 0
     onScrollStop = => @$theadRow.animate(opacity: 1, 250) unless @$theadRow.is(":animated")
     onScroll = =>
-      # clearTimeout(scrollTimer)
       scrollTop = @$tableContainer.scrollTop()
       @$theadRow.css(top: scrollTop)
-      # scrollTimer = setTimeout onScrollStop, 50
-      # @$theadRow.css(opacity: 0) if Math.abs(lastScrollTop - scrollTop) > 20 and not @isEmpty()
-      # lastScrollTop = scrollTop
       @trigger('scroll')
 
     @$tableContainer[0].removeEventListener('scroll', onScroll, true)
@@ -145,9 +141,7 @@ class @TableView extends Backbone.View
         onSave()
 
 
-  isEmpty: ->
-    @$tbody.is(":empty")
-
+  isEmpty: -> @$tbody.is(":empty")
 
   # Update DOM of table cell with field name at given row id
   #
@@ -315,9 +309,7 @@ class @TableView extends Backbone.View
     q.drain = -> callback(rows.join(''))
     
 
-  emptyBody: ->
-    @$tbody.empty()
-
+  emptyBody: -> @$tbody.empty()
 
   # Renders table
   #
@@ -340,13 +332,9 @@ class @TableView extends Backbone.View
       @trigger('render')
 
 
-  showLoading: (percentage) ->
-    app.progressView.show(percentage)
+  showLoading: (percentage) -> app.progressView.show(percentage)
 
-  
-  hideLoading: ->
-    app.progressView.hide()
-
+  hideLoading: -> app.progressView.hide()
 
   zeroState: ->
     @hideLoading()
